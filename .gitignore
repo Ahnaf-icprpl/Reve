@@ -5,16 +5,14 @@
 # Dependencies
 node_modules/
 .pnp
-.pnp.js
+.pnp.*
 
 # Environment variables, credentials, and secrets
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
 *.env
 !.env.example
+!.env.template
 
 # Logs and runtime diagnostics
 logs/
@@ -24,6 +22,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
 # Runtime, process, and cache
 pids/
@@ -31,20 +30,26 @@ pids/
 *.seed
 *.pid.lock
 .cache/
-tmp/
-temp/
+.eslintcache
+.parcel-cache/
 .tmp/
 
-# User-uploaded assets (keep directories tracked via .gitkeep)
+# User-uploaded assets and temporary files
 public/uploads/*
 !public/uploads/.gitkeep
+uploads/
+tmp/
+temp/
 
 # Database local storage, exports, and dump files
 *.sqlite
 *.sqlite3
 *.db
 *.db-journal
+*.db-wal
+*.db-shm
 *.dump
+*.sql.dump
 *.sql.gz
 
 # Coverage, testing, and reports
@@ -56,6 +61,8 @@ coverage/
 dist/
 build/
 out/
+.next/
+.nuxt/
 
 # Operating system files
 .DS_Store
@@ -79,3 +86,4 @@ desktop.ini
 
 # Tool & agent runtime artifacts
 .omp/
+.claude/

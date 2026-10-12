@@ -95,14 +95,15 @@
 
             <div class="form-group">
               <label class="form-label" for="tiSize">Size</label>
-              <input type="text" id="tiSize" name="size" class="form-input" placeholder="e.g. M, 32x32" value="M" required>
+              <input type="text" id="tiSize" name="size" class="form-input" placeholder="e.g. M, 32x32" required>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="tiCondition">Condition Rating</label>
               <select id="tiCondition" name="condition" class="form-select" required>
+                <option value="" disabled selected>Select condition rating...</option>
                 <option value="Like New">Like New (Flawless, barely worn)</option>
-                <option value="Excellent" selected>Excellent (Gently used, no flaws)</option>
+                <option value="Excellent">Excellent (Gently used, no flaws)</option>
                 <option value="Good">Good (Minor signs of wear)</option>
                 <option value="Fair">Fair (Wearable, light repairs)</option>
               </select>

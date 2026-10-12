@@ -199,11 +199,11 @@ router.post("/checkout", (req, res) => {
     paidWithCash,
     paymentMethod: paymentLabel,
     shippingAddress: {
-      fullName: fullName || "Alex Rivera",
-      street: street || "742 Evergreen Terrace",
-      city: city || "Portland",
-      state: state || "OR",
-      postalCode: postalCode || "97201"
+      fullName: (fullName && fullName.trim()) || "Customer",
+      street: (street && street.trim()) || "",
+      city: (city && city.trim()) || "",
+      state: (state && state.trim()) || "",
+      postalCode: (postalCode && postalCode.trim()) || ""
     },
     status: "Processing",
     ecoMetrics: {

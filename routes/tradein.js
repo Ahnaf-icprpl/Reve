@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const store = require("../data/store");
+const scoring = require("../services/scoring");
 
 // Multer setup for mock trade-in image uploads
 const storage = multer.diskStorage({
@@ -19,41 +20,16 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
-// Valuation algorithm based on brand tier, category, and condition
-function calculateTradeInValuation(brand, category, condition) {
-  let baseValue = 35;
+// Server-side Trade-in Valuation API Endpoint
+router.post("/api/trade-in/estimate", (req, res) => {
+  const calculation = scoring.calculateTradeInValuation(req.body || {});
+  res.json(calculation);
+});
 
-  // Category factor
-  const cat = (category || "").toLowerCase();
-  if (cat === "outerwear") baseValue = 85;
-  else if (cat === "knitwear") baseValue = 55;
-  else if (cat === "dresses") baseValue = 65;
-  else if (cat === "bottoms") baseValue = 50;
-  else if (cat === "tops") baseValue = 38;
-  else if (cat === "accessories") baseValue = 35;
-
-  // Brand tier factor
-  const b = (brand || "").toLowerCase();
-  let brandMultiplier = 1.0;
-  if (b.includes("arc'teryx") || b.includes("patagonia") || b.includes("a.p.c.") || b.includes("acne") || b.includes("barbour")) {
-    brandMultiplier = 1.6;
-  } else if (b.includes("everlane") || b.includes("sezane") || b.includes("sézane") || b.includes("reformation") || b.includes("levi") || b.includes("cos")) {
-    brandMultiplier = 1.25;
-  } else if (b.includes("zara") || b.includes("h&m") || b.includes("uniqlo") || b.includes("gap")) {
-    brandMultiplier = 0.75;
-  }
-
-  // Condition factor
-  let condMultiplier = 0.8;
-  const c = (condition || "").toLowerCase();
-  if (c === "like new" || c === "pristine") condMultiplier = 1.0;
-  else if (c === "excellent" || c === "gently used") condMultiplier = 0.85;
-  else if (c === "good") condMultiplier = 0.7;
-  else if (c === "fair") condMultiplier = 0.5;
-
-  const calculated = Math.round(baseValue * brandMultiplier * condMultiplier);
-  return Math.max(15, calculated); // minimum 15 RT
-}
+router.get("/api/trade-in/estimate", (req, res) => {
+  const calculation = scoring.calculateTradeInValuation(req.query || {});
+  res.json(calculation);
+});
 
 // Landing & Trade-in Submission Form
 router.get("/trade-in", (req, res) => {
@@ -75,24 +51,27 @@ router.post("/trade-in", upload.single("photo"), (req, res) => {
     photoUrl = photoUrlInput.trim();
   }
 
-  const assessedTokens = calculateTradeInValuation(brand, category, condition);
+  const valuation = scoring.calculateTradeInValuation({ brand, category, condition, material });
+  const assessedTokens = valuation.valuationTokens;
+  const conditionScore = valuation.scoreGrade;
   const tradeInId = "TI-" + Math.floor(1000 + Math.random() * 9000);
 
   const newTradeIn = {
     id: tradeInId,
-    title: title || `${brand || "Garment"} ${category || "Item"}`,
-    brand: brand || "Unspecified Brand",
+    title: (title && title.trim()) || `${brand || "Garment"} ${category || "Item"}`,
+    brand: (brand && brand.trim()) || "Unspecified Brand",
     category: category || "Apparel",
     gender: gender || "Unisex",
-    size: size || "M",
-    material: material || "Mixed Textiles",
+    size: (size && size.trim()) || "Standard",
+    material: (material && material.trim()) || "Mixed Textiles",
     condition: condition || "Gently Used",
-    notes: notes || "Submitted via Revé web intake portal.",
+    conditionScore,
+    notes: (notes && notes.trim()) || "Submitted via Revé intake portal",
     photoUrl,
     submissionDate: new Date().toISOString(),
     assessedValueTokens: assessedTokens,
-    status: "Offer Ready", // Instant MVP offer ready for immediate acceptance!
-    statusMessage: `Assessment complete! Offer of ${assessedTokens} RT ($${assessedTokens}.00 value) ready for your acceptance.`,
+    status: "Offer Ready",
+    statusMessage: `Assessment complete! Condition grade ${conditionScore}. Offer of ${assessedTokens} RT ($${assessedTokens}.00 value) ready for your acceptance.`,
     circularOutcome: "Pending User Acceptance"
   };
 

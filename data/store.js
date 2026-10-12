@@ -392,6 +392,11 @@ class Store {
     };
   }
 
+  getPlatformMetrics() {
+    const scoring = require("../services/scoring");
+    return scoring.calculatePlatformMetrics(this);
+  }
+
   creditTokens(amount, title, referenceId, type = "TRADE_IN_CREDIT") {
     const num = Math.round(Number(amount));
     if (num <= 0) return false;

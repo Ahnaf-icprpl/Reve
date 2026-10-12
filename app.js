@@ -29,10 +29,18 @@ app.use(
 );
 
 // Global view locals middleware
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.toast = req.session.toast || null;
   delete req.session.toast;
   res.locals.currentPath = req.path;
+  res.locals.currentUser = req.session.user || { name: "Ahnaf", role: "admin", id: "usr-ahnaf-ceo" };
+
+  const db = require("./services/db");
+  try {
+    res.locals.badges = await db.getUserBadges(res.locals.currentUser.id || "usr-ahnaf-ceo");
+  } catch (err) {
+    res.locals.badges = [];
+  }
   next();
 });
 
@@ -42,13 +50,13 @@ const marketplaceRouter = require("./routes/marketplace");
 const tradeinRouter = require("./routes/tradein");
 const donateRouter = require("./routes/donate");
 const ordersRouter = require("./routes/orders");
-
+const profileRouter = require("./routes/profile");
 app.use("/", indexRouter);
 app.use("/", marketplaceRouter);
 app.use("/", tradeinRouter);
 app.use("/", donateRouter);
 app.use("/", ordersRouter);
-
+app.use("/", profileRouter);
 // 404 Handler
 app.use((req, res) => {
   const store = require("./data/store");

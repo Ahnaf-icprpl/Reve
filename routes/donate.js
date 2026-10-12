@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const store = require("../data/store");
-
+const scoring = require("../services/scoring");
 // Donation intake form & circular process explanation
 router.get("/donate", (req, res) => {
   res.render("donate/index", {
@@ -23,9 +23,13 @@ router.post("/donate", (req, res) => {
   const donationId = "DON-" + Math.floor(1000 + Math.random() * 9000);
   const trackingNumber = "REV-CIRC-" + Math.floor(1000000 + Math.random() * 9000000);
 
-  // Environmental impact estimate based on item count
-  const estimatedKg = Number((count * 0.55).toFixed(1)); // ~0.55kg average per clothing piece
-  const estimatedWater = Math.round(count * 1250); // ~1,250L water saved per circular textile piece
+  // Server-side environmental impact calculation
+  const impact = scoring.calculateDonationImpact({
+    itemCount: count,
+    categories: cats,
+    fabrics: fabArray,
+    damageAssessment: intendedProgram
+  });
 
   const newDonation = {
     id: donationId,
@@ -40,9 +44,9 @@ router.post("/donate", (req, res) => {
     submissionDate: new Date().toISOString(),
     status: "Pass Generated",
     impactMetrics: {
-      textilesDivertedKg: estimatedKg,
-      waterSavedLiters: estimatedWater,
-      landfillDivertedPct: 100
+      textilesDivertedKg: impact.textilesDivertedKg,
+      waterSavedLiters: impact.waterSavedLiters,
+      landfillDivertedPct: impact.landfillDivertedPct
     },
     beneficiaryNotes: `Designated for ${intendedProgram || "Zero-Landfill Circular Recycling"}. Drop off using your QR pass or attach the prepaid label.`
   };

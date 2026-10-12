@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS orders (
     id VARCHAR(64) PRIMARY KEY,
-    user_id VARCHAR(64),
+    user_id VARCHAR(64) REFERENCES users(id) ON DELETE SET NULL,
     subtotal_fiat NUMERIC(10, 2) NOT NULL,
     shipping_fiat NUMERIC(10, 2) DEFAULT 0.00,
     total_fiat NUMERIC(10, 2) NOT NULL,

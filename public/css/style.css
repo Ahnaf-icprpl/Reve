@@ -191,6 +191,117 @@ button, input, select, textarea {
   gap: 1rem;
 }
 
+/* User Profile Badge (PFP + Name) */
+.user-profile-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.25rem 0.85rem 0.25rem 0.35rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.user-profile-nav:hover {
+  border-color: var(--text-primary);
+  background-color: var(--border-subtle);
+}
+
+.profile-pfp-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.profile-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-subtle);
+}
+
+/* User Profile Badges (Multiple badges per user) */
+.user-badges-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge-icon-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid var(--token-border);
+  color: var(--token-green-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.badge-icon-item:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.15);
+}
+
+.diamond-icon {
+  color: #059669;
+  filter: drop-shadow(0 1px 2px rgba(5, 150, 105, 0.25));
+}
+
+.badge-tooltip {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 25;
+  box-shadow: var(--shadow-subtle);
+}
+
+.badge-icon-item:hover .badge-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(4px);
+}
+
 .token-balance-chip {
   display: inline-flex;
   align-items: center;
@@ -1357,25 +1468,6 @@ h1, h2, h3, h4, h5 {
   max-width: 320px;
 }
 
-.token-peg-summary-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--bg-white);
-  border: 1px solid var(--token-border);
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  color: var(--token-green-dark);
-  font-weight: 600;
-}
-
-.peg-dot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--token-green);
-  border-radius: 50%;
-}
 
 .footer-heading {
   font-size: 0.8rem;

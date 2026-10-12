@@ -33,7 +33,7 @@ Revé is a responsive, server-side rendered (SSR) web application for buying, tr
 ## Token Economy (Revé Token — RT)
 
 - **Token Symbol**: `RT`
-- **Marketplace Purchasing Power**: **1:1 Value Peg** with the US Dollar (`$1.00 = 1 RT`) when redeemed on circular clothing listings.
+- **Marketplace Purchasing Power**: **1:1 Value Peg** (`1 RT = 1 RP`) when redeemed on circular clothing listings.
 - **Closed-Loop Incentive**: Encourages keeping garments and value circulating within the circular loop.
 
 ---

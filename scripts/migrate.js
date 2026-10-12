@@ -10,19 +10,27 @@ const { Client } = require("pg");
 require("dotenv").config();
 
 async function runMigrations() {
-  const config = process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString && (!process.env.DB_HOST || !process.env.DB_PASSWORD)) {
+    console.error("[ERROR] Missing database configuration. Set DATABASE_URL in .env (No hardcoded fallback allowed).");
+    process.exit(1);
+  }
+
+  const config = connectionString
+    ? {
+        connectionString,
+        ssl: { rejectUnauthorized: false }
+      }
     : {
-        host: process.env.DB_HOST || "localhost",
-        port: parseInt(process.env.DB_PORT, 10) || 5432,
-        user: process.env.DB_USER || "postgres",
-        password: process.env.DB_PASSWORD || "QooFWwWTjm0Et7W1",
-        database: process.env.DB_NAME || "reve_db"
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT, 10),
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        ssl: { rejectUnauthorized: false }
       };
 
   console.log("Connecting to PostgreSQL database...");
-  console.log(`Database: ${config.database} @ ${config.host || "remote"}:${config.port || 5432}`);
-
   const client = new Client(config);
 
   try {

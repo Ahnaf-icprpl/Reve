@@ -216,7 +216,7 @@ class Store {
     this.products = [...INITIAL_PRODUCTS];
     
     // User wallet state
-    // Currency: USD ($). 1 RT = $1 in marketplace; 1 RT = $0.80 cash payout (20% conversion deduction)
+    // 1 RT = 1 RP in marketplace; 1 RT = 0.80 RP cash payout (20% conversion deduction)
     this.wallet = {
       tokenName: "Revé Token",
       tokenSymbol: "RT",
@@ -392,6 +392,25 @@ class Store {
         beneficiaryNotes: "Sorted at Revé Hub Seattle: 5 garments repaired for community clothing drive, 3 shredded into acoustic insulation."
       }
     ];
+
+    // User Badges (supports multiple badges per user)
+    this.badges = [
+      {
+        id: "badge-ceo",
+        title: "I AM THE CEO",
+        icon: "diamond",
+        description: "Chief Executive Officer / Founder Badge"
+      }
+    ];
+
+    this.userBadges = [
+      {
+        id: "badge-ceo",
+        title: "I AM THE CEO",
+        icon: "diamond",
+        description: "Chief Executive Officer / Founder Badge"
+      }
+    ];
   }
 
   // --- Wallet Helpers ---
@@ -413,6 +432,15 @@ class Store {
       deductionAmount: Number(deductionAmount.toFixed(2)),
       ledger: this.wallet.ledger
     };
+  }
+
+  getUserBadges() {
+    return this.userBadges || [];
+  }
+
+  getPlatformMetrics() {
+    const scoring = require("../services/scoring");
+    return scoring.calculatePlatformMetrics(this);
   }
 
   creditTokens(amount, title, referenceId, type = "TRADE_IN_CREDIT") {

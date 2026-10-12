@@ -20,24 +20,24 @@
         <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
           <div class="form-group">
             <label class="form-label" for="fullName">Full Name</label>
-            <input type="text" id="fullName" name="fullName" class="form-input" value="Alex Rivera" required>
+            <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Full Name" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="street">Street Address</label>
-            <input type="text" id="street" name="street" class="form-input" value="742 Evergreen Terrace" required>
+            <input type="text" id="street" name="street" class="form-input" placeholder="Street Address" required>
           </div>
           <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label" for="city">City</label>
-              <input type="text" id="city" name="city" class="form-input" value="Portland" required>
+              <input type="text" id="city" name="city" class="form-input" placeholder="City" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="state">State</label>
-              <input type="text" id="state" name="state" class="form-input" value="OR" required>
+              <input type="text" id="state" name="state" class="form-input" placeholder="State" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="postalCode">Zip / Postal Code</label>
-              <input type="text" id="postalCode" name="postalCode" class="form-input" value="97201" required>
+              <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="Postal Code" required>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <span>2. Select Payment Method</span>
         </h2>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-          Revé tokens maintain an exact 1:1 dollar value peg ($1.00 = 1 RT) when spent on circular fashion.
+          Revé tokens maintain an exact 1:1 value peg (1 RT = 1 RP) when spent on circular fashion.
         </p>
 
         <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -59,7 +59,7 @@
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 0.95rem;">Pay Full with Revé Tokens (RT)</strong>
-                <span class="badge badge-token">1:1 Value ($1.00 = 1 RT)</span>
+                <span class="badge badge-token">1:1 Value (1 RT = 1 RP)</span>
               </div>
               <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
                 Redeem <strong><%= cart.tokenSubtotal %> RT</strong> from your wallet. Current available balance: <strong><%= wallet.balance %> RT</strong>.

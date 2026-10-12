@@ -20,15 +20,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 6000);
   }
 
-  // 4. Interactive Trade-In Instant Estimate Calculator on Form
+  // Interactive Trade-In Server-Side Valuation Preview (No client-side hardcoding)
   const tiBrandInput = document.getElementById("tiBrand");
   const tiCategorySelect = document.getElementById("tiCategory");
   const tiConditionSelect = document.getElementById("tiCondition");
+  const tiMaterialInput = document.getElementById("tiMaterial");
   const tiEstimateDisplay = document.getElementById("tiEstimateDisplay");
   const tiFiatDisplay = document.getElementById("tiFiatDisplay");
 
   if (tiBrandInput && tiCategorySelect && tiConditionSelect && tiEstimateDisplay) {
-    function calculateInstantEstimate() {
+    let debounceTimer = null;
+
+    async function fetchServerEstimate() {
       const brand = (tiBrandInput.value || "").trim();
       if (!brand) {
         tiEstimateDisplay.textContent = "— RT";
@@ -39,41 +42,44 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      let baseValue = 35;
-      const cat = (tiCategorySelect.value || "").toLowerCase();
-      if (cat === "outerwear") baseValue = 85;
-      else if (cat === "knitwear") baseValue = 55;
-      else if (cat === "dresses") baseValue = 65;
-      else if (cat === "bottoms") baseValue = 50;
-      else if (cat === "tops") baseValue = 38;
-      else if (cat === "accessories") baseValue = 35;
+      try {
+        const payload = {
+          brand,
+          category: tiCategorySelect.value || "",
+          condition: tiConditionSelect.value || "",
+          material: tiMaterialInput ? tiMaterialInput.value : ""
+        };
 
-      let brandMultiplier = 1.0;
-      const b = brand.toLowerCase();
-      if (b.includes("arc'teryx") || b.includes("patagonia") || b.includes("a.p.c.") || b.includes("acne") || b.includes("barbour")) {
-        brandMultiplier = 1.6;
-      } else if (b.includes("everlane") || b.includes("sezane") || b.includes("sézane") || b.includes("reformation") || b.includes("levi") || b.includes("cos")) {
-        brandMultiplier = 1.25;
-      } else if (b.includes("zara") || b.includes("h&m") || b.includes("uniqlo") || b.includes("gap")) {
-        brandMultiplier = 0.75;
+        const res = await fetch("/api/trade-in/estimate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.isValid) {
+            tiEstimateDisplay.textContent = `~${data.valuationTokens} RT`;
+            tiEstimateDisplay.style.color = "var(--token-green-dark)";
+            if (tiFiatDisplay) {
+              tiFiatDisplay.textContent = `Indicative ~${data.valuationTokens} RT ($${data.fiatValue}.00) \u2022 Condition Grade: ${data.scoreGrade}`;
+            }
+          }
+        }
+      } catch (err) {
+        // Network error handled gracefully
       }
-
-      const cond = (tiConditionSelect.value || "").toLowerCase();
-      let condMultiplier = 0.8;
-      if (cond.includes("like new") || cond.includes("pristine")) condMultiplier = 1.0;
-      else if (cond.includes("excellent") || cond.includes("gently used")) condMultiplier = 0.85;
-      else if (cond.includes("good")) condMultiplier = 0.7;
-      else if (cond.includes("fair")) condMultiplier = 0.5;
-
-      const estimate = Math.max(15, Math.round(baseValue * brandMultiplier * condMultiplier));
-      tiEstimateDisplay.textContent = `~${estimate} RT`;
-      tiEstimateDisplay.style.color = "var(--token-green-dark)";
-      if (tiFiatDisplay) tiFiatDisplay.textContent = `Indicative ~${estimate} RT ($${estimate}.00) \u2022 Subject to intake inspection`;
     }
 
-    tiBrandInput.addEventListener("input", calculateInstantEstimate);
-    tiCategorySelect.addEventListener("change", calculateInstantEstimate);
-    tiConditionSelect.addEventListener("change", calculateInstantEstimate);
+    function onInputChange() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(fetchServerEstimate, 250);
+    }
+
+    tiBrandInput.addEventListener("input", onInputChange);
+    tiCategorySelect.addEventListener("change", onInputChange);
+    tiConditionSelect.addEventListener("change", onInputChange);
+    if (tiMaterialInput) tiMaterialInput.addEventListener("input", onInputChange);
   }
 
 

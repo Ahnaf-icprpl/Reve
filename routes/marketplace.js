@@ -6,16 +6,18 @@ const db = require("../services/db");
 router.get("/marketplace", async (req, res, next) => {
   try {
     const { category, condition, sort, q, maxPrice } = req.query;
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
 
-    const [products, wallet, cart] = await Promise.all([
+    const [products, wallet, cart, dbCategories, dbConditions] = await Promise.all([
       db.getProducts({ category, condition, sort, q, maxPrice }),
       db.getWalletSummary(userId),
-      db.getCart(userId, req.sessionID)
+      db.getCart(userId, req.sessionID),
+      db.getCategories(),
+      db.getConditions()
     ]);
 
-    const categories = ["All", "Outerwear", "Knitwear", "Bottoms", "Tops", "Dresses", "Accessories"];
-    const conditions = ["All", "Like New", "Gently Used", "Vintage"];
+    const categories = ["All", ...dbCategories];
+    const conditions = ["All", ...dbConditions];
 
     res.render("marketplace/index", {
       title: "Circular Marketplace — Revé",
@@ -38,7 +40,7 @@ router.get("/marketplace", async (req, res, next) => {
 // Single product details
 router.get("/marketplace/:id", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const product = await db.getProductById(req.params.id);
 
     if (!product) {
@@ -67,7 +69,7 @@ router.get("/marketplace/:id", async (req, res, next) => {
 // Cart view
 router.get("/cart", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [cart, wallet] = await Promise.all([
       db.getCart(userId, req.sessionID),
       db.getWalletSummary(userId)
@@ -86,7 +88,7 @@ router.get("/cart", async (req, res, next) => {
 // Add to cart
 router.post("/cart/add", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const { productId, quantity } = req.body;
     const qty = parseInt(quantity, 10) || 1;
     const success = await db.addToCart(userId, req.sessionID, productId, qty);
@@ -107,7 +109,7 @@ router.post("/cart/add", async (req, res, next) => {
 // Remove from cart
 router.post("/cart/remove", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const { productId } = req.body;
     await db.removeFromCart(userId, req.sessionID, productId);
     req.session.toast = { type: "info", message: "Item removed from bag." };
@@ -120,7 +122,7 @@ router.post("/cart/remove", async (req, res, next) => {
 // Checkout page
 router.get("/checkout", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [cart, wallet] = await Promise.all([
       db.getCart(userId, req.sessionID),
       db.getWalletSummary(userId)
@@ -144,7 +146,7 @@ router.get("/checkout", async (req, res, next) => {
 // Process checkout
 router.post("/checkout", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [cart, wallet] = await Promise.all([
       db.getCart(userId, req.sessionID),
       db.getWalletSummary(userId)

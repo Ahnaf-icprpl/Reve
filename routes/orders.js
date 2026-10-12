@@ -5,7 +5,7 @@ const db = require("../services/db");
 // Orders list
 router.get("/orders", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [orders, wallet, cart] = await Promise.all([
       db.getOrders(userId),
       db.getWalletSummary(userId),
@@ -26,7 +26,7 @@ router.get("/orders", async (req, res, next) => {
 // Single order receipt
 router.get("/orders/:id", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [order, wallet, cart] = await Promise.all([
       db.getOrderById(req.params.id, userId),
       db.getWalletSummary(userId),

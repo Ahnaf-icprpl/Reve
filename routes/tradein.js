@@ -34,7 +34,7 @@ router.get("/api/trade-in/estimate", (req, res) => {
 // Landing & Trade-in Submission Form
 router.get("/trade-in", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [wallet, cart] = await Promise.all([
       db.getWalletSummary(userId),
       db.getCart(userId, req.sessionID)
@@ -53,10 +53,15 @@ router.get("/trade-in", async (req, res, next) => {
 // Submit Trade-in
 router.post("/trade-in", upload.single("photo"), async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const { title, brand, category, gender, size, material, condition, notes, photoUrlInput } = req.body;
 
-    let photoUrl = "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=600&q=80";
+    if (!brand || !brand.trim()) {
+      req.session.toast = { type: "error", message: "Brand is required for trade-in assessment." };
+      return res.redirect("/trade-in");
+    }
+
+    let photoUrl = null;
     if (req.file) {
       photoUrl = `/uploads/${req.file.filename}`;
     } else if (photoUrlInput && photoUrlInput.trim()) {
@@ -70,14 +75,14 @@ router.post("/trade-in", upload.single("photo"), async (req, res, next) => {
     await db.createTradeIn({
       id: tradeInId,
       userId,
-      title: (title && title.trim()) || `${brand || "Garment"} ${category || "Item"}`,
-      brand: (brand && brand.trim()) || "Unspecified Brand",
+      title: (title && title.trim()) || `${brand.trim()} ${category || "Garment"}`,
+      brand: brand.trim(),
       category: category || "Apparel",
       gender: gender || "Unisex",
-      size: (size && size.trim()) || "Standard",
-      material: (material && material.trim()) || "Mixed Textiles",
-      condition: condition || "Gently Used",
-      notes: (notes && notes.trim()) || "Submitted via Revé intake portal",
+      size: size || "Standard",
+      material: material || "Textile",
+      condition: condition || "Inspected",
+      notes: notes || "",
       photoUrl,
       assessedValueTokens: assessedTokens
     });
@@ -96,7 +101,7 @@ router.post("/trade-in", upload.single("photo"), async (req, res, next) => {
 // Tracking list of trade-ins
 router.get("/trade-in/track", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [tradeIns, wallet, cart] = await Promise.all([
       db.getTradeIns(userId),
       db.getWalletSummary(userId),
@@ -117,7 +122,7 @@ router.get("/trade-in/track", async (req, res, next) => {
 // Single Trade-in view
 router.get("/trade-in/:id", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [item, wallet, cart] = await Promise.all([
       db.getTradeInById(req.params.id),
       db.getWalletSummary(userId),
@@ -143,7 +148,7 @@ router.get("/trade-in/:id", async (req, res, next) => {
 // Accept Trade-in Offer -> Credits tokens to wallet!
 router.post("/trade-in/:id/accept", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const { tokens } = await db.acceptTradeIn(req.params.id, userId);
 
     req.session.toast = {

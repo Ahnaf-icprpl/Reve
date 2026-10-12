@@ -6,7 +6,7 @@ const scoring = require("../services/scoring");
 // Donation intake form & circular process explanation
 router.get("/donate", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [wallet, cart] = await Promise.all([
       db.getWalletSummary(userId),
       db.getCart(userId, req.sessionID)
@@ -25,7 +25,7 @@ router.get("/donate", async (req, res, next) => {
 // Process donation submission
 router.post("/donate", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const { title, itemCount, categories, fabrics, conditionSummary, intendedProgram, dropOffMethod } = req.body;
 
     const count = parseInt(itemCount, 10) || 1;
@@ -73,7 +73,7 @@ router.post("/donate", async (req, res, next) => {
 // Track donation history & circular impact
 router.get("/donate/track", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [donations, wallet, cart] = await Promise.all([
       db.getDonations(userId),
       db.getWalletSummary(userId),
@@ -107,7 +107,7 @@ router.get("/donate/track", async (req, res, next) => {
 // Single donation pass & details
 router.get("/donate/:id", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [donation, wallet, cart] = await Promise.all([
       db.getDonationById(req.params.id),
       db.getWalletSummary(userId),

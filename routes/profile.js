@@ -5,7 +5,7 @@ const db = require("../services/db");
 // User Profile Page
 router.get("/profile", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
 
     const [wallet, cart, orders, tradeIns, donations, badges] = await Promise.all([
       db.getWalletSummary(userId),

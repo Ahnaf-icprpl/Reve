@@ -18,7 +18,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
               <h1 class="editorial-heading" style="font-size: 2.25rem; line-height: 1.1; margin: 0;">
-                <%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %>
+                <%= currentUser.name %>
               </h1>
               <div class="user-badges-row">
                 <% if (typeof badges !== 'undefined' && badges && badges.length > 0) { %>
@@ -27,7 +27,7 @@
                       <% if (badge.svg) { %>
                         <%- badge.svg %>
                       <% } else { %>
-                        <i data-lucide="<%= badge.icon || 'diamond' %>" class="badge-icon-svg"></i>
+                        <i data-lucide="<%= badge.icon %>" class="badge-icon-svg"></i>
                       <% } %>
                       <span class="badge-tooltip"><%= badge.title %></span>
                     </div>

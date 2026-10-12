@@ -5,7 +5,7 @@ const db = require("../services/db");
 // Homepage
 router.get("/", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [featuredProducts, stats, wallet, cart] = await Promise.all([
       db.getFeaturedProducts(4),
       db.getPlatformMetrics(),
@@ -28,7 +28,7 @@ router.get("/", async (req, res, next) => {
 // About page
 router.get("/about", async (req, res, next) => {
   try {
-    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [wallet, cart] = await Promise.all([
       db.getWalletSummary(userId),
       db.getCart(userId, req.sessionID)

@@ -1,7 +1,7 @@
 /**
  * Revé Database Service
  * PostgreSQL-backed service with ZERO fallbacks.
- * All product catalog, user wallets, transactions, cart, orders, trade-ins,
+ * All product catalog, user profiles, wallets, transactions, cart, orders, trade-ins,
  * donations, and badges are queried and persisted directly in PostgreSQL.
  */
 
@@ -42,15 +42,19 @@ function getPool() {
  * @returns {string} - Generated SVG markup
  */
 function renderIcon(iconName, options = {}) {
-  if (!iconName) iconName = "diamond";
+  if (!iconName) {
+    throw new Error("iconName is required for renderIcon. Zero fallback allowed.");
+  }
 
   const pascalName = iconName
     .split(/[-_]/)
     .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
     .join("");
 
-  const iconDef = lucide.icons[pascalName] || lucide.icons[iconName] || lucide.icons.Diamond;
-  if (!iconDef) return "";
+  const iconDef = lucide.icons[pascalName] || lucide.icons[iconName];
+  if (!iconDef) {
+    throw new Error(`Lucide icon definition for "${iconName}" not found. Zero fallback allowed.`);
+  }
 
   const width = options.width || 18;
   const height = options.height || 18;
@@ -66,6 +70,73 @@ function renderIcon(iconName, options = {}) {
     .join("");
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${className}">${children}</svg>`;
+}
+
+/**
+ * Query user profile by ID from PostgreSQL
+ */
+async function getUserById(userId) {
+  const p = getPool();
+  const res = await p.query(
+    `SELECT id, email, full_name, role, is_verified, phone,
+            street_address, city, state, postal_code, country
+     FROM users WHERE id = $1`,
+    [userId]
+  );
+
+  if (res.rows.length === 0) {
+    throw new Error(`User with ID "${userId}" does not exist in database. Zero fallback allowed.`);
+  }
+
+  const u = res.rows[0];
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.full_name,
+    role: u.role,
+    isVerified: Boolean(u.is_verified),
+    phone: u.phone,
+    address: {
+      street: u.street_address,
+      city: u.city,
+      state: u.state,
+      postalCode: u.postal_code,
+      country: u.country
+    }
+  };
+}
+
+/**
+ * Query default primary user (e.g. founder) from PostgreSQL
+ */
+async function getDefaultUser() {
+  const p = getPool();
+  const res = await p.query(
+    `SELECT id, email, full_name, role, is_verified, phone,
+            street_address, city, state, postal_code, country
+     FROM users ORDER BY created_at ASC LIMIT 1`
+  );
+
+  if (res.rows.length === 0) {
+    throw new Error("No users found in database. Zero fallback allowed.");
+  }
+
+  const u = res.rows[0];
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.full_name,
+    role: u.role,
+    isVerified: Boolean(u.is_verified),
+    phone: u.phone,
+    address: {
+      street: u.street_address,
+      city: u.city,
+      state: u.state,
+      postalCode: u.postal_code,
+      country: u.country
+    }
+  };
 }
 
 /**
@@ -103,7 +174,10 @@ function mapProduct(row) {
 /**
  * Query user badges live from PostgreSQL
  */
-async function getUserBadges(userId = "usr-ahnaf-ceo") {
+async function getUserBadges(userId) {
+  if (!userId) {
+    throw new Error("userId is required for getUserBadges. Zero fallback allowed.");
+  }
   const p = getPool();
   const res = await p.query(
     `SELECT b.id, b.title, b.icon, b.description, ub.awarded_at
@@ -114,20 +188,32 @@ async function getUserBadges(userId = "usr-ahnaf-ceo") {
     [userId]
   );
 
-  if (res.rows.length === 0) {
-    const allBadges = await p.query(
-      `SELECT id, title, icon, description FROM badges ORDER BY created_at ASC`
-    );
-    return allBadges.rows.map(b => ({
-      ...b,
-      svg: renderIcon(b.icon)
-    }));
-  }
-
   return res.rows.map(b => ({
     ...b,
     svg: renderIcon(b.icon)
   }));
+}
+
+/**
+ * Query distinct product categories from PostgreSQL
+ */
+async function getCategories() {
+  const p = getPool();
+  const res = await p.query(
+    "SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND in_stock = TRUE ORDER BY category ASC"
+  );
+  return res.rows.map(r => r.category);
+}
+
+/**
+ * Query distinct product conditions from PostgreSQL
+ */
+async function getConditions() {
+  const p = getPool();
+  const res = await p.query(
+    "SELECT DISTINCT condition FROM products WHERE condition IS NOT NULL AND in_stock = TRUE ORDER BY condition ASC"
+  );
+  return res.rows.map(r => r.condition);
 }
 
 /**
@@ -203,55 +289,58 @@ async function getProductById(productId) {
 }
 
 /**
- * Query related products
+ * Query related products in the same category
  */
 async function getRelatedProducts(productId, category, limit = 3) {
   const p = getPool();
   const res = await p.query(
     `SELECT * FROM products
      WHERE category = $1 AND id != $2 AND in_stock = TRUE
+     ORDER BY created_at ASC
      LIMIT $3`,
     [category, productId, limit]
   );
 
-  let results = res.rows.map(mapProduct);
-  if (results.length < limit) {
-    const needed = limit - results.length;
-    const existingIds = [productId, ...results.map(r => r.id)];
-    const placeholders = existingIds.map((_, i) => `$${i + 1}`).join(", ");
-    const fallbackRes = await p.query(
-      `SELECT * FROM products
-       WHERE id NOT IN (${placeholders}) AND in_stock = TRUE
-       LIMIT $${existingIds.length + 1}`,
-      [...existingIds, needed]
-    );
-    results = results.concat(fallbackRes.rows.map(mapProduct));
-  }
-  return results;
+  return res.rows.map(mapProduct);
 }
 
 /**
- * Query platform metrics
+ * Query platform metrics strictly from PostgreSQL
  */
 async function getPlatformMetrics() {
   const p = getPool();
   const res = await p.query("SELECT key, value FROM platform_metrics");
+  if (res.rows.length === 0) {
+    throw new Error("platform_metrics table is empty in database. Zero fallback allowed.");
+  }
+
   const metrics = {};
   for (const row of res.rows) {
     metrics[row.key] = row.value;
   }
+
+  const required = ["garmentsRecirculated", "waterSavedLiters", "tokensEarnedByCommunity", "landfillDivertedKg"];
+  for (const key of required) {
+    if (!metrics[key]) {
+      throw new Error(`Missing "${key}" in platform_metrics table. Zero fallback allowed.`);
+    }
+  }
+
   return {
-    garmentsRecirculated: metrics.garmentsRecirculated || "0",
-    waterSavedLiters: metrics.waterSavedLiters || "0",
-    tokensEarnedByCommunity: metrics.tokensEarnedByCommunity || "0",
-    landfillDivertedKg: metrics.landfillDivertedKg || "0"
+    garmentsRecirculated: metrics.garmentsRecirculated,
+    waterSavedLiters: metrics.waterSavedLiters,
+    tokensEarnedByCommunity: metrics.tokensEarnedByCommunity,
+    landfillDivertedKg: metrics.landfillDivertedKg
   };
 }
 
 /**
  * Query user wallet and transaction ledger
  */
-async function getWalletSummary(userId = "usr-ahnaf-ceo") {
+async function getWalletSummary(userId) {
+  if (!userId) {
+    throw new Error("userId is required for getWalletSummary. Zero fallback allowed.");
+  }
   const p = getPool();
   const walletRes = await p.query(
     "SELECT * FROM wallets WHERE user_id = $1",
@@ -305,6 +394,9 @@ async function getWalletSummary(userId = "usr-ahnaf-ceo") {
  * Spend tokens from wallet inside database transaction
  */
 async function spendTokens(userId, amount, title, referenceId) {
+  if (!userId) {
+    throw new Error("userId is required for spendTokens. Zero fallback allowed.");
+  }
   const p = getPool();
   const client = await p.connect();
   try {
@@ -354,6 +446,9 @@ async function spendTokens(userId, amount, title, referenceId) {
  * Credit tokens to wallet inside database transaction
  */
 async function creditTokens(userId, amount, title, referenceId) {
+  if (!userId) {
+    throw new Error("userId is required for creditTokens. Zero fallback allowed.");
+  }
   const p = getPool();
   const client = await p.connect();
   try {
@@ -398,7 +493,11 @@ async function creditTokens(userId, amount, title, referenceId) {
 /**
  * Query cart from PostgreSQL
  */
-async function getCart(userId = "usr-ahnaf-ceo", sessionId = null) {
+async function getCart(userId, sessionId = null) {
+  if (!userId && !sessionId) {
+    throw new Error("userId or sessionId is required for getCart. Zero fallback allowed.");
+  }
+
   const p = getPool();
   let res;
   if (userId) {
@@ -410,7 +509,7 @@ async function getCart(userId = "usr-ahnaf-ceo", sessionId = null) {
        ORDER BY c.created_at ASC`,
       [userId]
     );
-  } else if (sessionId) {
+  } else {
     res = await p.query(
       `SELECT c.id AS cart_item_id, c.quantity, p.*
        FROM cart_items c
@@ -419,15 +518,6 @@ async function getCart(userId = "usr-ahnaf-ceo", sessionId = null) {
        ORDER BY c.created_at ASC`,
       [sessionId]
     );
-  } else {
-    return {
-      items: [],
-      count: 0,
-      subtotal: 0,
-      tokenSubtotal: 0,
-      totalWaterSaved: 0,
-      totalCo2Saved: 0
-    };
   }
 
   const items = res.rows.map(row => ({
@@ -456,7 +546,10 @@ async function getCart(userId = "usr-ahnaf-ceo", sessionId = null) {
 /**
  * Add product to cart in PostgreSQL
  */
-async function addToCart(userId = "usr-ahnaf-ceo", sessionId = null, productId, quantity = 1) {
+async function addToCart(userId, sessionId = null, productId, quantity = 1) {
+  if (!userId && !sessionId) {
+    throw new Error("userId or sessionId is required for addToCart. Zero fallback allowed.");
+  }
   const p = getPool();
   const product = await getProductById(productId);
   if (!product) return false;
@@ -482,7 +575,10 @@ async function addToCart(userId = "usr-ahnaf-ceo", sessionId = null, productId, 
 /**
  * Remove product from cart in PostgreSQL
  */
-async function removeFromCart(userId = "usr-ahnaf-ceo", sessionId = null, productId) {
+async function removeFromCart(userId, sessionId = null, productId) {
+  if (!userId && !sessionId) {
+    throw new Error("userId or sessionId is required for removeFromCart. Zero fallback allowed.");
+  }
   const p = getPool();
   if (userId) {
     await p.query(
@@ -500,7 +596,10 @@ async function removeFromCart(userId = "usr-ahnaf-ceo", sessionId = null, produc
 /**
  * Clear cart in PostgreSQL
  */
-async function clearCart(userId = "usr-ahnaf-ceo", sessionId = null) {
+async function clearCart(userId, sessionId = null) {
+  if (!userId && !sessionId) {
+    throw new Error("userId or sessionId is required for clearCart. Zero fallback allowed.");
+  }
   const p = getPool();
   if (userId) {
     await p.query("DELETE FROM cart_items WHERE user_id = $1", [userId]);
@@ -512,7 +611,10 @@ async function clearCart(userId = "usr-ahnaf-ceo", sessionId = null) {
 /**
  * Query orders list for a user
  */
-async function getOrders(userId = "usr-ahnaf-ceo") {
+async function getOrders(userId) {
+  if (!userId) {
+    throw new Error("userId is required for getOrders. Zero fallback allowed.");
+  }
   const p = getPool();
   const ordersRes = await p.query(
     "SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC",
@@ -566,10 +668,13 @@ async function getOrders(userId = "usr-ahnaf-ceo") {
 /**
  * Query single order by ID
  */
-async function getOrderById(orderId, userId = "usr-ahnaf-ceo") {
+async function getOrderById(orderId, userId) {
+  if (!orderId || !userId) {
+    throw new Error("orderId and userId are required for getOrderById. Zero fallback allowed.");
+  }
   const p = getPool();
   const orderRes = await p.query(
-    "SELECT * FROM orders WHERE id = $1 AND (user_id = $2 OR $2 IS NULL)",
+    "SELECT * FROM orders WHERE id = $1 AND user_id = $2",
     [orderId, userId]
   );
 
@@ -619,7 +724,7 @@ async function getOrderById(orderId, userId = "usr-ahnaf-ceo") {
  * Create order with cart items in PostgreSQL inside a database transaction
  */
 async function createOrder({
-  userId = "usr-ahnaf-ceo",
+  userId,
   sessionId = null,
   cart,
   paidWithTokens = 0,
@@ -627,12 +732,26 @@ async function createOrder({
   paymentLabel,
   shippingAddress = {}
 }) {
+  if (!userId) {
+    throw new Error("userId is required to createOrder. Zero fallback allowed.");
+  }
+  if (!cart || !cart.items || cart.items.length === 0) {
+    throw new Error("Cart is empty. Cannot create order. Zero fallback allowed.");
+  }
+
   const p = getPool();
   const client = await p.connect();
   const orderId = "REV-" + Math.floor(1000 + Math.random() * 9000);
 
   try {
     await client.query("BEGIN");
+
+    // Fetch user profile from database for address
+    const userRes = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
+    if (userRes.rows.length === 0) {
+      throw new Error(`User with ID "${userId}" does not exist in database.`);
+    }
+    const u = userRes.rows[0];
 
     // 1. If tokens paid, verify and deduct tokens
     if (paidWithTokens > 0) {
@@ -665,7 +784,13 @@ async function createOrder({
       );
     }
 
-    // 2. Insert order
+    // 2. Insert order using user profile for missing shipping details
+    const fullName = (shippingAddress.fullName && shippingAddress.fullName.trim()) || u.full_name;
+    const street = (shippingAddress.street && shippingAddress.street.trim()) || u.street_address || "";
+    const city = (shippingAddress.city && shippingAddress.city.trim()) || u.city || "";
+    const state = (shippingAddress.state && shippingAddress.state.trim()) || u.state || "";
+    const postalCode = (shippingAddress.postalCode && shippingAddress.postalCode.trim()) || u.postal_code || "";
+
     await client.query(
       `INSERT INTO orders (
         id, user_id, subtotal_fiat, shipping_fiat, total_fiat,
@@ -682,11 +807,11 @@ async function createOrder({
         paidWithTokens,
         paidWithCash,
         paymentLabel,
-        (shippingAddress.fullName && shippingAddress.fullName.trim()) || "Customer",
-        (shippingAddress.street && shippingAddress.street.trim()) || "",
-        (shippingAddress.city && shippingAddress.city.trim()) || "",
-        (shippingAddress.state && shippingAddress.state.trim()) || "",
-        (shippingAddress.postalCode && shippingAddress.postalCode.trim()) || "",
+        fullName,
+        street,
+        city,
+        state,
+        postalCode,
         cart.totalWaterSaved,
         cart.totalCo2Saved
       ]
@@ -731,7 +856,10 @@ async function createOrder({
 /**
  * Query trade-ins for a user
  */
-async function getTradeIns(userId = "usr-ahnaf-ceo") {
+async function getTradeIns(userId) {
+  if (!userId) {
+    throw new Error("userId is required for getTradeIns. Zero fallback allowed.");
+  }
   const p = getPool();
   const res = await p.query(
     "SELECT * FROM trade_ins WHERE user_id = $1 ORDER BY created_at DESC",
@@ -761,6 +889,9 @@ async function getTradeIns(userId = "usr-ahnaf-ceo") {
  * Query single trade-in by ID
  */
 async function getTradeInById(tradeInId) {
+  if (!tradeInId) {
+    throw new Error("tradeInId is required for getTradeInById. Zero fallback allowed.");
+  }
   const p = getPool();
   const res = await p.query("SELECT * FROM trade_ins WHERE id = $1", [tradeInId]);
   if (res.rows.length === 0) return null;
@@ -789,11 +920,11 @@ async function getTradeInById(tradeInId) {
  */
 async function createTradeIn({
   id,
-  userId = "usr-ahnaf-ceo",
+  userId,
   title,
   brand,
   category,
-  gender = "Unisex",
+  gender,
   size,
   material,
   condition,
@@ -801,6 +932,9 @@ async function createTradeIn({
   photoUrl,
   assessedValueTokens
 }) {
+  if (!id || !userId || !brand || !category || assessedValueTokens === undefined) {
+    throw new Error("Missing required trade-in fields. Zero fallback allowed.");
+  }
   const p = getPool();
   const statusMessage = `Assessment complete! Offer of ${assessedValueTokens} RT ($${assessedValueTokens}.00 value) ready for your acceptance.`;
 
@@ -813,15 +947,15 @@ async function createTradeIn({
     [
       id,
       userId,
-      title,
+      title || `${brand} ${category}`,
       brand,
       category,
-      gender,
-      size,
-      material,
-      condition,
-      notes,
-      photoUrl,
+      gender || "Unisex",
+      size || "Standard",
+      material || "Apparel",
+      condition || "Inspected",
+      notes || "",
+      photoUrl || null,
       assessedValueTokens,
       statusMessage
     ]
@@ -831,7 +965,10 @@ async function createTradeIn({
 /**
  * Accept trade-in offer: updates status and credits tokens to wallet in one transaction
  */
-async function acceptTradeIn(tradeInId, userId = "usr-ahnaf-ceo") {
+async function acceptTradeIn(tradeInId, userId) {
+  if (!tradeInId || !userId) {
+    throw new Error("tradeInId and userId are required for acceptTradeIn. Zero fallback allowed.");
+  }
   const p = getPool();
   const client = await p.connect();
 
@@ -909,6 +1046,9 @@ async function acceptTradeIn(tradeInId, userId = "usr-ahnaf-ceo") {
  * Decline trade-in offer
  */
 async function declineTradeIn(tradeInId) {
+  if (!tradeInId) {
+    throw new Error("tradeInId is required for declineTradeIn. Zero fallback allowed.");
+  }
   const p = getPool();
   await p.query(
     `UPDATE trade_ins
@@ -923,7 +1063,10 @@ async function declineTradeIn(tradeInId) {
 /**
  * Query donations for a user
  */
-async function getDonations(userId = "usr-ahnaf-ceo") {
+async function getDonations(userId) {
+  if (!userId) {
+    throw new Error("userId is required for getDonations. Zero fallback allowed.");
+  }
   const p = getPool();
   const donRes = await p.query(
     "SELECT * FROM donations WHERE user_id = $1 ORDER BY created_at DESC",
@@ -963,6 +1106,9 @@ async function getDonations(userId = "usr-ahnaf-ceo") {
  * Query single donation by ID
  */
 async function getDonationById(donationId) {
+  if (!donationId) {
+    throw new Error("donationId is required for getDonationById. Zero fallback allowed.");
+  }
   const p = getPool();
   const donRes = await p.query("SELECT * FROM donations WHERE id = $1", [donationId]);
   if (donRes.rows.length === 0) return null;
@@ -997,7 +1143,7 @@ async function getDonationById(donationId) {
  */
 async function createDonation({
   id,
-  userId = "usr-ahnaf-ceo",
+  userId,
   title,
   itemCountLabel,
   itemCountNumeric = 1,
@@ -1010,6 +1156,9 @@ async function createDonation({
   landfillDivertedPct = 100,
   beneficiaryNotes
 }) {
+  if (!id || !userId || !trackingNumber) {
+    throw new Error("Missing required donation fields. Zero fallback allowed.");
+  }
   const p = getPool();
   const client = await p.connect();
 
@@ -1057,7 +1206,11 @@ async function createDonation({
 module.exports = {
   getPool,
   renderIcon,
+  getUserById,
+  getDefaultUser,
   getUserBadges,
+  getCategories,
+  getConditions,
   getProducts,
   getFeaturedProducts,
   getProductById,

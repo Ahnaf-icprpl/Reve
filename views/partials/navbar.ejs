@@ -33,14 +33,14 @@
 
       <!-- User profile badge: circle pfp icon and name -->
       <div class="navbar-actions">
-        <a href="/profile" class="user-profile-nav" title="View Profile — I AM THE CEO">
+        <a href="/profile" class="user-profile-nav" title="View Profile">
           <div class="profile-pfp-circle" aria-label="Profile picture">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </div>
-          <span class="profile-name"><%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %></span>
+          <span class="profile-name"><%= currentUser.name %></span>
           <% if (typeof badges !== 'undefined' && badges && badges.length > 0) { %>
             <span class="badge-icon-item" style="width: 22px; height: 22px; margin-left: -0.2rem;" title="<%= badges[0].title %>">
               <%- badges[0].svg %>

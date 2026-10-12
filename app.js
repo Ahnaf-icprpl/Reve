@@ -29,18 +29,23 @@ app.use(
 
 // Global view locals middleware
 app.use(async (req, res, next) => {
-  res.locals.toast = req.session.toast || null;
-  delete req.session.toast;
-  res.locals.currentPath = req.path;
-  res.locals.currentUser = req.session.user || { name: "Ahnaf", role: "admin", id: "usr-ahnaf-ceo" };
-
-  const db = require("./services/db");
   try {
-    res.locals.badges = await db.getUserBadges(res.locals.currentUser.id || "usr-ahnaf-ceo");
+    const db = require("./services/db");
+    res.locals.toast = req.session.toast || null;
+    delete req.session.toast;
+    res.locals.currentPath = req.path;
+
+    if (req.session.user && req.session.user.id) {
+      res.locals.currentUser = await db.getUserById(req.session.user.id);
+    } else {
+      res.locals.currentUser = await db.getDefaultUser();
+    }
+
+    res.locals.badges = await db.getUserBadges(res.locals.currentUser.id);
+    next();
   } catch (err) {
-    res.locals.badges = [];
+    next(err);
   }
-  next();
 });
 
 // Routes
@@ -60,7 +65,7 @@ app.use("/", profileRouter);
 app.use(async (req, res, next) => {
   try {
     const db = require("./services/db");
-    const userId = (res.locals.currentUser && res.locals.currentUser.id) || "usr-ahnaf-ceo";
+    const userId = res.locals.currentUser.id;
     const [featuredProducts, stats, wallet, cart] = await Promise.all([
       db.getFeaturedProducts(4),
       db.getPlatformMetrics(),

@@ -1,17 +1,22 @@
+# ===================================================================
+# Revé — Production .gitignore
+# ===================================================================
+
 # Dependencies
 node_modules/
 .pnp
 .pnp.js
 
-# Environment variables and secrets
+# Environment variables, credentials, and secrets
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 *.env
+!.env.example
 
-# Logs
+# Logs and runtime diagnostics
 logs/
 *.log
 npm-debug.log*
@@ -20,25 +25,37 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Runtime and cache
+# Runtime, process, and cache
 pids/
 *.pid
 *.seed
 *.pid.lock
 .cache/
+tmp/
+temp/
+.tmp/
 
-# User uploads (keep directory tracked via .gitkeep)
+# User-uploaded assets (keep directories tracked via .gitkeep)
 public/uploads/*
 !public/uploads/.gitkeep
 
-# Coverage and testing
+# Database local storage, exports, and dump files
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.dump
+*.sql.gz
+
+# Coverage, testing, and reports
 coverage/
 *.lcov
 .nyc_output/
 
-# Build outputs
+# Build artifacts & distribution
 dist/
 build/
+out/
 
 # Operating system files
 .DS_Store
@@ -50,7 +67,7 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# IDEs and editor configurations
+# IDEs, text editors, and development tooling
 .idea/
 .vscode/
 *.sublime-project
@@ -58,3 +75,7 @@ desktop.ini
 *.swp
 *.swo
 *~
+*.bak
+
+# Tool & agent runtime artifacts
+.omp/

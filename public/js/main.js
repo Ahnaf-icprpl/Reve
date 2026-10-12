@@ -76,14 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
     tiConditionSelect.addEventListener("change", calculateInstantEstimate);
   }
 
-    // Quick brand chips selection
-    const brandChips = document.querySelectorAll(".brand-chip");
-    brandChips.forEach(chip => {
-      chip.addEventListener("click", function () {
-        tiBrandInput.value = this.getAttribute("data-brand") || this.textContent.trim();
-        tiBrandInput.dispatchEvent(new Event("input"));
-      });
-    });
 
   // 5. Checkout Payment Selection Breakdown
   const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');

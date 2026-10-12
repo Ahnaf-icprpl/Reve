@@ -1,0 +1,225 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <!-- Profile Header Hero -->
+  <section style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 3.5rem 0 2rem;">
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+        <!-- User Avatar & Identity -->
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+          <div class="profile-avatar-large">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+              <h1 class="editorial-heading" style="font-size: 2.25rem; line-height: 1.1; margin: 0;">
+                <%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %>
+              </h1>
+              <span class="badge badge-token" style="font-size: 0.75rem;">
+                ✦ Circular Member
+              </span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
+              Member since October 2026 &bull; Active Participant in Textile Reclamation
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="/trade-in" class="btn btn-secondary btn-sm">
+            + New Trade-In
+          </a>
+          <a href="/donate" class="btn btn-secondary btn-sm">
+            + Donate Textiles
+          </a>
+          <a href="/marketplace" class="btn btn-primary btn-sm">
+            Shop Marketplace &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Metrics Grid -->
+  <section class="container" style="padding: 3rem 0 5rem;">
+    <!-- Top 4 Summary Cards -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+      <!-- Card 1: Token Balance -->
+      <div class="card-white" style="border-color: var(--token-green);">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--token-green); letter-spacing: 0.06em;">
+          Available Balance
+        </span>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--token-green-dark); margin: 0.25rem 0;">
+          <%= wallet.balance %> RT
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Guaranteed 1:1 ($<%= wallet.balance %>.00) marketplace purchasing value.
+        </p>
+        <a href="/marketplace" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
+          Spend on Clothing &rarr;
+        </a>
+      </div>
+
+      <!-- Card 2: Orders Count -->
+      <div class="card-white">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">
+          Completed Orders
+        </span>
+        <div style="font-size: 2rem; font-weight: 800; margin: 0.25rem 0;">
+          <%= orders.length %>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Verified circular clothing orders delivered.
+        </p>
+        <a href="/orders" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
+          View Order Receipts &rarr;
+        </a>
+      </div>
+
+      <!-- Card 3: Trade-ins Count -->
+      <div class="card-white">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">
+          Wardrobe Trade-Ins
+        </span>
+        <div style="font-size: 2rem; font-weight: 800; margin: 0.25rem 0;">
+          <%= tradeIns.length %>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Garments submitted for token valuation offers.
+        </p>
+        <a href="/trade-in/track" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
+          Review Submissions &rarr;
+        </a>
+      </div>
+
+      <!-- Card 4: Donations Count -->
+      <div class="card-white">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em;">
+          Textile Donations
+        </span>
+        <div style="font-size: 2rem; font-weight: 800; margin: 0.25rem 0;">
+          <%= donations.length %>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Reclamation packages diverted from landfills.
+        </p>
+        <a href="/donate/track" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
+          View Impact Passes &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Personal Environmental Impact Callout -->
+    <div class="card-white" style="border-color: var(--token-border); background-color: var(--token-green-light); padding: 2rem; margin-bottom: 3.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--token-green-dark); letter-spacing: 0.08em;">
+            Personal Sustainability Ledger
+          </span>
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--token-green-dark); margin: 0.25rem 0;">
+            Your Circular Impact Footprint
+          </h2>
+        </div>
+        <span class="badge badge-token">100% Verified Circular Actions</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 1.5rem;">
+        <div>
+          <div style="font-size: 2rem; font-weight: 800; color: var(--token-green-dark); line-height: 1;">
+            💧 <%= impact.waterSavedLiters %> L
+          </div>
+          <div style="font-size: 0.82rem; color: var(--token-green-dark); margin-top: 0.35rem;">
+            Clean freshwater conserved through circular reuse vs new garment production.
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 2rem; font-weight: 800; color: var(--token-green-dark); line-height: 1;">
+            🌱 <%= impact.co2AvoidedKg %> kg
+          </div>
+          <div style="font-size: 0.82rem; color: var(--token-green-dark); margin-top: 0.35rem;">
+            Greenhouse gas emissions prevented from entering the atmosphere.
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size: 2rem; font-weight: 800; color: var(--token-green-dark); line-height: 1;">
+            ♻ <%= impact.garmentsRecirculated %> Pieces
+          </div>
+          <div style="font-size: 0.82rem; color: var(--token-green-dark); margin-top: 0.35rem;">
+            Total clothing pieces kept in continuous active circulation.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Navigation to User Streams Layout -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <!-- Column A: Order History Quick Peek -->
+      <div class="card-white" style="padding: 1.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">Recent Orders</h3>
+          <a href="/orders" style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">View All &rarr;</a>
+        </div>
+
+        <% if (orders.length === 0) { %>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">No orders placed yet.</p>
+        <% } else { %>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <% orders.slice(0, 2).forEach(order => { %>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+                <div>
+                  <strong>Order #<%= order.id %></strong>
+                  <div style="color: var(--text-muted); font-size: 0.78rem;">
+                    <%= new Date(order.date).toLocaleDateString() %> &bull; <%= order.items ? order.items.length : 1 %> items
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge <%= order.status === 'Delivered' ? 'badge-status-credited' : 'badge-status-ready' %>"><%= order.status %></span>
+                  <div style="font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">$<%= order.totalFiat.toFixed(2) %></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Column B: Trade-In Submissions Quick Peek -->
+      <div class="card-white" style="padding: 1.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0;">Trade-In Submissions</h3>
+          <a href="/trade-in/track" style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">View All &rarr;</a>
+        </div>
+
+        <% if (tradeIns.length === 0) { %>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">No trade-ins submitted yet.</p>
+        <% } else { %>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <% tradeIns.slice(0, 2).forEach(t => { %>
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle);">
+                <div>
+                  <strong><%= t.title %></strong>
+                  <div style="color: var(--text-muted); font-size: 0.78rem;">
+                    <%= t.brand %> &bull; <%= t.category %>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <span class="badge <%= t.status === 'Offer Ready' ? 'badge-status-ready' : 'badge-status-credited' %>"><%= t.status %></span>
+                  <div style="font-weight: 700; color: var(--token-green-dark); font-size: 0.9rem; margin-top: 0.25rem;"><%= t.assessedValueTokens %> RT</div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

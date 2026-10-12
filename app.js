@@ -41,13 +41,13 @@ const marketplaceRouter = require("./routes/marketplace");
 const tradeinRouter = require("./routes/tradein");
 const donateRouter = require("./routes/donate");
 const ordersRouter = require("./routes/orders");
-
+const profileRouter = require("./routes/profile");
 app.use("/", indexRouter);
 app.use("/", marketplaceRouter);
 app.use("/", tradeinRouter);
 app.use("/", donateRouter);
 app.use("/", ordersRouter);
-
+app.use("/", profileRouter);
 // 404 Handler
 app.use((req, res) => {
   const store = require("./data/store");

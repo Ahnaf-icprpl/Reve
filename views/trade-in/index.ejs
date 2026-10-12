@@ -42,9 +42,42 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label" for="tiBrand">Brand</label>
-              <input type="text" id="tiBrand" name="brand" class="form-input" placeholder="e.g. Patagonia, Arc'teryx, Levi's" required value="Patagonia">
+              <input type="text" id="tiBrand" name="brand" list="brandOptions" class="form-input" placeholder="Type or select a brand..." required value="Patagonia" autocomplete="off">
+              <datalist id="brandOptions">
+                <option value="Arc'teryx">
+                <option value="Patagonia">
+                <option value="The North Face">
+                <option value="Barbour">
+                <option value="Fjällräven">
+                <option value="Woolrich">
+                <option value="A.P.C.">
+                <option value="Acne Studios">
+                <option value="COS">
+                <option value="Everlane">
+                <option value="Reformation">
+                <option value="Sézane">
+                <option value="Ganni">
+                <option value="Eileen Fisher">
+                <option value="Nudie Jeans">
+                <option value="Arket">
+                <option value="Levi's">
+                <option value="Carhartt WIP">
+                <option value="Carhartt">
+                <option value="Ralph Lauren">
+                <option value="Uniqlo">
+                <option value="Massimo Dutti">
+                <option value="Zara">
+                <option value="Other / Independent Label">
+              </datalist>
+              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.4rem;" id="quickBrandChips">
+                <button type="button" class="badge badge-condition brand-chip" data-brand="Patagonia" style="cursor: pointer;">Patagonia</button>
+                <button type="button" class="badge badge-condition brand-chip" data-brand="Arc'teryx" style="cursor: pointer;">Arc'teryx</button>
+                <button type="button" class="badge badge-condition brand-chip" data-brand="Levi's" style="cursor: pointer;">Levi's</button>
+                <button type="button" class="badge badge-condition brand-chip" data-brand="Everlane" style="cursor: pointer;">Everlane</button>
+                <button type="button" class="badge badge-condition brand-chip" data-brand="COS" style="cursor: pointer;">COS</button>
+                <button type="button" class="badge badge-condition brand-chip" data-brand="A.P.C." style="cursor: pointer;">A.P.C.</button>
+              </div>
             </div>
-
             <div class="form-group">
               <label class="form-label" for="tiCategory">Category</label>
               <select id="tiCategory" name="category" class="form-select" required>

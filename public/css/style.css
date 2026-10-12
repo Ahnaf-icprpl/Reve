@@ -455,6 +455,16 @@ h1, h2, h3, h4, h5 {
   border-color: var(--border-light);
 }
 
+.brand-chip {
+  transition: all 0.15s ease;
+}
+
+.brand-chip:hover {
+  background-color: var(--border-subtle);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
 .badge-status-credited {
   background-color: #ecfdf5;
   color: #065f46;

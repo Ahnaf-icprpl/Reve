@@ -156,10 +156,10 @@ router.post("/trade-in/:id/accept", (req, res) => {
 
   req.session.toast = {
     type: "success",
-    message: `Success! ${tokens} RT has been credited to your Revé wallet. Spend it 1:1 on clothing or cash out.`
+    message: `Success! ${tokens} RT has been credited to your account. Spend it 1:1 on clothing in the marketplace.`
   };
 
-  res.redirect("/wallet");
+  res.redirect("/trade-in/track");
 });
 
 // Decline Trade-in Offer

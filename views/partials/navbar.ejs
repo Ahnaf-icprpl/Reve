@@ -27,9 +27,6 @@
         <a href="/donate" class="nav-item <%= (typeof currentPath !== 'undefined' && currentPath.startsWith('/donate')) ? 'active' : '' %>">
           Donate & Recycle
         </a>
-        <a href="/wallet" class="nav-item <%= (typeof currentPath !== 'undefined' && currentPath === '/wallet') ? 'active' : '' %>">
-          Token Wallet
-        </a>
         <a href="/about" class="nav-item <%= (typeof currentPath !== 'undefined' && currentPath === '/about') ? 'active' : '' %>">
           How It Works
         </a>
@@ -38,16 +35,16 @@
       <!-- User action utilities: Token balance chip & Cart -->
       <div class="navbar-actions">
         <!-- Live Token Balance Chip -->
-        <a href="/wallet" class="token-balance-chip" title="View Revé Token Wallet & Cash-Out">
+        <div class="token-balance-chip" style="cursor: default;" title="Revé Tokens available for circular checkout">
           <span class="token-icon">✦</span>
-          <span class="token-label">Wallet</span>
+          <span class="token-label">Tokens</span>
           <span class="token-amount">
             <%= (typeof wallet !== 'undefined' && wallet.balance !== undefined) ? wallet.balance : 150 %> RT
           </span>
           <span class="token-fiat">
             ($<%= (typeof wallet !== 'undefined' && wallet.balance !== undefined) ? wallet.balance : 150 %>.00)
           </span>
-        </a>
+        </div>
 
         <!-- Orders link -->
         <a href="/orders" class="nav-icon-link" title="Order History" aria-label="Orders">

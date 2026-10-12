@@ -20,31 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 6000);
   }
 
-  // 3. Interactive Cash-Out Withdrawal Calculator in Wallet
-  const tokenAmountInput = document.getElementById("withdrawTokenAmount");
-  const calcTokensDisplay = document.getElementById("calcTokensDisplay");
-  const calcGrossDisplay = document.getElementById("calcGrossDisplay");
-  const calcDeductionDisplay = document.getElementById("calcDeductionDisplay");
-  const calcPayoutDisplay = document.getElementById("calcPayoutDisplay");
-
-  if (tokenAmountInput) {
-    function updateCashoutCalc() {
-      const tokens = parseFloat(tokenAmountInput.value) || 0;
-      const deductionRate = 0.20; // 20% conversion deduction per product spec
-      const grossFiat = tokens; // 1:1 nominal
-      const deductionAmount = tokens * deductionRate;
-      const netPayout = Math.max(0, tokens - deductionAmount);
-
-      if (calcTokensDisplay) calcTokensDisplay.textContent = tokens + " RT";
-      if (calcGrossDisplay) calcGrossDisplay.textContent = "$" + grossFiat.toFixed(2);
-      if (calcDeductionDisplay) calcDeductionDisplay.textContent = "-$" + deductionAmount.toFixed(2);
-      if (calcPayoutDisplay) calcPayoutDisplay.textContent = "$" + netPayout.toFixed(2);
-    }
-
-    tokenAmountInput.addEventListener("input", updateCashoutCalc);
-    updateCashoutCalc(); // initial calculation
-  }
-
   // 4. Interactive Trade-In Instant Estimate Calculator on Form
   const tiBrandInput = document.getElementById("tiBrand");
   const tiCategorySelect = document.getElementById("tiCategory");

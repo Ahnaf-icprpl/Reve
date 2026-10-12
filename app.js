@@ -39,14 +39,12 @@ const indexRouter = require("./routes/index");
 const marketplaceRouter = require("./routes/marketplace");
 const tradeinRouter = require("./routes/tradein");
 const donateRouter = require("./routes/donate");
-const walletRouter = require("./routes/wallet");
 const ordersRouter = require("./routes/orders");
 
 app.use("/", indexRouter);
 app.use("/", marketplaceRouter);
 app.use("/", tradeinRouter);
 app.use("/", donateRouter);
-app.use("/", walletRouter);
 app.use("/", ordersRouter);
 
 // 404 Handler

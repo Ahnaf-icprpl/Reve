@@ -58,20 +58,26 @@ app.use("/", donateRouter);
 app.use("/", ordersRouter);
 app.use("/", profileRouter);
 // 404 Handler
-app.use((req, res) => {
-  const store = require("./data/store");
-  res.status(404).render("index", {
-    title: "Page Not Found — Revé",
-    featuredProducts: store.products.slice(0, 4),
-    stats: {
-      garmentsRecirculated: "14,820",
-      waterSavedLiters: "18.4M",
-      tokensEarnedByCommunity: "840,000",
-      landfillDivertedKg: "12,400"
-    },
-    wallet: store.getWalletSummary(),
-    cart: store.getCart()
-  });
+app.use(async (req, res, next) => {
+  try {
+    const db = require("./services/db");
+    const userId = (res.locals.currentUser && res.locals.currentUser.id) || "usr-ahnaf-ceo";
+    const [featuredProducts, stats, wallet, cart] = await Promise.all([
+      db.getFeaturedProducts(4),
+      db.getPlatformMetrics(),
+      db.getWalletSummary(userId),
+      db.getCart(userId, req.sessionID)
+    ]);
+    res.status(404).render("index", {
+      title: "Page Not Found — Revé",
+      featuredProducts,
+      stats,
+      wallet,
+      cart
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Error Handler

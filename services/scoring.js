@@ -154,25 +154,25 @@ function calculateDonationImpact(params = {}) {
 
 /**
  * Dynamic Platform Aggregate Metrics Calculation
- * Aggregates live numbers from the actual store/database instead of hardcoding
+ * Aggregates live numbers from data metrics
  */
-function calculatePlatformMetrics(store) {
+function calculatePlatformMetrics(data = {}) {
   let garmentsRecirculated = 0;
   let totalWaterLiters = 0;
   let totalTokensEarned = 0;
   let totalTextilesDivertedKg = 0;
 
   // 1. Tally from products catalog
-  if (store.products && Array.isArray(store.products)) {
-    garmentsRecirculated += store.products.length;
-    store.products.forEach(p => {
+  if (data.products && Array.isArray(data.products)) {
+    garmentsRecirculated += data.products.length;
+    data.products.forEach(p => {
       totalWaterLiters += (p.ecoSavings && p.ecoSavings.waterLiters) || 0;
     });
   }
 
   // 2. Tally from placed orders
-  if (store.orders && Array.isArray(store.orders)) {
-    store.orders.forEach(o => {
+  if (data.orders && Array.isArray(data.orders)) {
+    data.orders.forEach(o => {
       const orderCount = o.items ? o.items.reduce((s, i) => s + (i.quantity || 1), 0) : 1;
       garmentsRecirculated += orderCount;
       totalWaterLiters += (o.ecoMetrics && o.ecoMetrics.waterSaved) || 0;
@@ -180,8 +180,8 @@ function calculatePlatformMetrics(store) {
   }
 
   // 3. Tally from accepted trade-ins
-  if (store.tradeIns && Array.isArray(store.tradeIns)) {
-    store.tradeIns.forEach(t => {
+  if (data.tradeIns && Array.isArray(data.tradeIns)) {
+    data.tradeIns.forEach(t => {
       if (t.status === "Credited" || t.status === "Offer Ready") {
         garmentsRecirculated += 1;
         totalWaterLiters += (t.assessedValueTokens || 0) * 25;
@@ -190,8 +190,8 @@ function calculatePlatformMetrics(store) {
   }
 
   // 4. Tally from processed donations
-  if (store.donations && Array.isArray(store.donations)) {
-    store.donations.forEach(d => {
+  if (data.donations && Array.isArray(data.donations)) {
+    data.donations.forEach(d => {
       const count = typeof d.itemCount === "number" ? d.itemCount : (parseInt(d.itemCount, 10) || 1);
       garmentsRecirculated += count;
       totalTextilesDivertedKg += (d.impactMetrics && d.impactMetrics.textilesDivertedKg) || (count * 0.55);
@@ -200,8 +200,8 @@ function calculatePlatformMetrics(store) {
   }
 
   // 5. Tally tokens issued from wallet ledger
-  if (store.wallet && store.wallet.ledger && Array.isArray(store.wallet.ledger)) {
-    store.wallet.ledger.forEach(tx => {
+  if (data.wallet && data.wallet.ledger && Array.isArray(data.wallet.ledger)) {
+    data.wallet.ledger.forEach(tx => {
       if (tx.tokenChange > 0) {
         totalTokensEarned += tx.tokenChange;
       }

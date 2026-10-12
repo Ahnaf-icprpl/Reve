@@ -119,15 +119,18 @@ Reve/
 ├── package.json             # NPM package scripts & dependencies
 ├── .env.example             # Environment configuration template
 ├── README.md                # Project documentation
-├── data/
-│   └── store.js             # Data model & in-memory state store
+├── services/
+│   ├── db.js                # PostgreSQL database service (zero fallback)
+│   └── scoring.js           # Environmental savings & valuation algorithms
 ├── migrations/              # Modular SQL database migrations
-│   ├── 001_users.sql        # Users table drop
+│   ├── 001_users.sql        # Users credentials & profiles
 │   ├── 002_products.sql     # Clothing catalog & eco-savings schema
 │   ├── 003_trade_ins.sql    # Wardrobe trade-ins & valuation offers
 │   ├── 004_donations.sql    # Donations & damage assessment (Circle less)
 │   ├── 005_tokens_and_ledger.sql # Token wallets & audit ledger
 │   ├── 006_orders.sql       # Orders & line items schema
+│   ├── 007_badges.sql       # User badges schema
+│   ├── 008_seed_and_cart.sql # Seed data, platform metrics & cart schema
 │   └── README.md            # Migrations guide
 ├── scripts/
 │   └── migrate.js           # Idempotent migration runner script

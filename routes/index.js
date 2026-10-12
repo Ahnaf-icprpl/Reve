@@ -1,31 +1,47 @@
 const express = require("express");
 const router = express.Router();
-const store = require("../data/store");
-const scoring = require("../services/scoring");
-// Homepage
-router.get("/", (req, res) => {
-  const featuredProducts = store.products.slice(0, 4);
-  const wallet = store.getWalletSummary();
-  const cart = store.getCart();
+const db = require("../services/db");
 
-  // Server-side dynamically aggregated circular metrics
-  const stats = store.getPlatformMetrics();
-  res.render("index", {
-    title: "Revé — Circular Clothing Marketplace & Token Economy",
-    featuredProducts,
-    stats,
-    wallet,
-    cart
-  });
+// Homepage
+router.get("/", async (req, res, next) => {
+  try {
+    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const [featuredProducts, stats, wallet, cart] = await Promise.all([
+      db.getFeaturedProducts(4),
+      db.getPlatformMetrics(),
+      db.getWalletSummary(userId),
+      db.getCart(userId, req.sessionID)
+    ]);
+
+    res.render("index", {
+      title: "Revé — Circular Clothing Marketplace & Token Economy",
+      featuredProducts,
+      stats,
+      wallet,
+      cart
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // About page
-router.get("/about", (req, res) => {
-  res.render("about/index", {
-    title: "About Revé — Revé",
-    wallet: store.getWalletSummary(),
-    cart: store.getCart()
-  });
+router.get("/about", async (req, res, next) => {
+  try {
+    const userId = (req.session.user && req.session.user.id) || "usr-ahnaf-ceo";
+    const [wallet, cart] = await Promise.all([
+      db.getWalletSummary(userId),
+      db.getCart(userId, req.sessionID)
+    ]);
+
+    res.render("about/index", {
+      title: "About Revé — Revé",
+      wallet,
+      cart
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

@@ -57,7 +57,7 @@
                   </div>
                   <div style="text-align: right; font-size: 0.85rem;">
                     <div>$<%= item.price %></div>
-                    <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= item.tokens %> CT</div>
+                    <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= item.tokens %> RT</div>
                   </div>
                 </div>
               <% }) %>
@@ -69,7 +69,7 @@
                 <span style="color: var(--text-muted);">Payment Method:</span>
                 <strong><%= order.paymentMethod %></strong>
                 <% if (order.paidWithTokens > 0) { %>
-                  <span class="badge badge-token" style="margin-left: 0.5rem;"><%= order.paidWithTokens %> CT Redeemed</span>
+                  <span class="badge badge-token" style="margin-left: 0.5rem;"><%= order.paidWithTokens %> RT Redeemed</span>
                 <% } %>
               </div>
 

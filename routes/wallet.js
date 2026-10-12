@@ -38,7 +38,7 @@ router.post("/wallet/withdraw", (req, res) => {
   if (tokens > wallet.balance) {
     req.session.toast = {
       type: "error",
-      message: `Cannot cash out ${tokens} CT. Your current balance is ${wallet.balance} CT.`
+      message: `Cannot cash out ${tokens} RT. Your current balance is ${wallet.balance} RT.`
     };
     return res.redirect("/wallet");
   }
@@ -58,7 +58,7 @@ router.post("/wallet/withdraw", (req, res) => {
 
   req.session.toast = {
     type: "success",
-    message: `Cash-out confirmed! Converted ${result.tokensDeducted} CT into $${result.netCash.toFixed(2)} cash ($${result.deductionTokens} deduction applied). Transferred to ${destinationDetail}. Ref: ${result.referenceId}`
+    message: `Cash-out confirmed! Converted ${result.tokensDeducted} RT into $${result.netCash.toFixed(2)} cash ($${result.deductionTokens} deduction applied). Transferred to ${destinationDetail}. Ref: ${result.referenceId}`
   };
 
   res.redirect("/wallet");
@@ -69,11 +69,11 @@ router.post("/wallet/topup", (req, res) => {
   const { amount } = req.body;
   const tokens = parseInt(amount, 10) || 50;
 
-  store.creditTokens(tokens, `Wallet Demonstration Top-Up (+${tokens} CT)`, "TOPUP-" + Date.now(), "TOPUP");
+  store.creditTokens(tokens, `Wallet Demonstration Top-Up (+${tokens} RT)`, "TOPUP-" + Date.now(), "TOPUP");
 
   req.session.toast = {
     type: "success",
-    message: `Added ${tokens} CT to your digital wallet for testing!`
+    message: `Added ${tokens} RT to your digital wallet for testing!`
   };
 
   res.redirect("/wallet");

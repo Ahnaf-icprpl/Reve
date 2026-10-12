@@ -3,7 +3,7 @@
   <div class="top-announcement">
     <div class="container announcement-inner">
       <span class="announcement-pill">DUAL-VALUE TOKEN</span>
-      <span>1 Clothing Token (CT) = $1.00 when redeemed on circular clothing</span>
+      <span>1 Revé Token (RT) = $1.00 when redeemed on circular clothing</span>
       <a href="/wallet" class="announcement-link">Explore Token Wallet &rarr;</a>
     </div>
   </div>
@@ -17,9 +17,9 @@
         <span class="hamburger-line"></span>
       </button>
 
-      <!-- All-text brand logo: Revé -->
+      <!-- All-text brand logo: Revé with tick on last e -->
       <a href="/" class="brand-logo" aria-label="Revé Home">
-        <span class="brand-name">Revé</span>
+        <span class="brand-name">Rev<span class="accent-e">é</span></span>
         <span class="brand-dot">.</span>
         <span class="brand-sub">CIRCULAR</span>
       </a>
@@ -50,7 +50,7 @@
           <span class="token-icon">✦</span>
           <span class="token-label">Wallet</span>
           <span class="token-amount">
-            <%= (typeof wallet !== 'undefined' && wallet.balance !== undefined) ? wallet.balance : 150 %> CT
+            <%= (typeof wallet !== 'undefined' && wallet.balance !== undefined) ? wallet.balance : 150 %> RT
           </span>
           <span class="token-fiat">
             ($<%= (typeof wallet !== 'undefined' && wallet.balance !== undefined) ? wallet.balance : 150 %>.00)

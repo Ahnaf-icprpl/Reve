@@ -9,7 +9,7 @@
         <div>
           <span class="section-label">Digital Token Ledger</span>
           <h1 class="editorial-heading" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
-            Clothing Token Wallet
+            Revé Token Wallet
           </h1>
           <p style="color: var(--text-secondary); max-width: 680px; font-size: 0.95rem;">
             Revé tokens reward participation in circular fashion. Tokens hold 1:1 value when spent on clothing, while cashing out incurs a 20% deduction to incentivize closed-loop reuse.
@@ -19,8 +19,8 @@
         <!-- Quick Demo Top-Up for testing -->
         <form action="/wallet/topup" method="POST" style="display: flex; gap: 0.5rem; align-items: center;">
           <input type="hidden" name="amount" value="50">
-          <button type="submit" class="btn btn-secondary btn-sm" title="Add 50 CT to balance for testing">
-            + Quick Add 50 CT (Demo)
+          <button type="submit" class="btn btn-secondary btn-sm" title="Add 50 RT to balance for testing">
+            + Quick Add 50 RT (Demo)
           </button>
         </form>
       </div>
@@ -90,15 +90,15 @@
         <form action="/wallet/withdraw" method="POST" id="withdrawForm">
           <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: baseline;">
-              <label class="form-label" for="withdrawTokenAmount">Tokens to Convert (CT)</label>
+              <label class="form-label" for="withdrawTokenAmount">Tokens to Convert (RT)</label>
               <span style="font-size: 0.75rem; color: var(--text-muted);">
-                Max available: <strong><%= wallet.balance %> CT</strong>
+                Max available: <strong><%= wallet.balance %> RT</strong>
               </span>
             </div>
             <div style="position: relative;">
               <input type="number" id="withdrawTokenAmount" name="tokenAmount" class="form-input" min="1" max="<%= wallet.balance %>" value="<%= Math.min(50, wallet.balance) %>" required style="font-size: 1.25rem; font-weight: 700; padding-right: 4rem;">
               <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--token-green-dark); font-size: 0.9rem;">
-                CT
+                RT
               </span>
             </div>
           </div>
@@ -126,7 +126,7 @@
 
             <div class="calc-row">
               <span class="calc-label">Tokens Converted:</span>
-              <span class="calc-val" id="calcTokensDisplay">50 CT</span>
+              <span class="calc-val" id="calcTokensDisplay">50 RT</span>
             </div>
 
             <div class="calc-row">
@@ -255,13 +255,13 @@
                   </td>
                   <td>
                     <% if (tx.tokenChange > 0) { %>
-                      <span class="token-positive">+<%= tx.tokenChange %> CT</span>
+                      <span class="token-positive">+<%= tx.tokenChange %> RT</span>
                     <% } else { %>
-                      <span class="token-negative"><%= tx.tokenChange %> CT</span>
+                      <span class="token-negative"><%= tx.tokenChange %> RT</span>
                     <% } %>
                   </td>
                   <td style="font-weight: 600;">
-                    <%= tx.balanceAfter %> CT
+                    <%= tx.balanceAfter %> RT
                   </td>
                   <td style="font-size: 0.85rem; color: var(--text-secondary);">
                     $<%= tx.fiatEquivalent.toFixed(2) %> USD

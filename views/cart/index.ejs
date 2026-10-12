@@ -56,7 +56,7 @@
               <div style="margin-top: 0.5rem; display: flex; gap: 0.75rem; align-items: baseline;">
                 <span style="font-weight: 700; font-size: 1rem;">$<%= item.subtotal %></span>
                 <span style="font-size: 0.82rem; color: var(--token-green-dark); font-weight: 600;">
-                  ✦ <%= item.subtotal %> CT
+                  ✦ <%= item.subtotal %> RT
                 </span>
               </div>
             </div>
@@ -85,7 +85,7 @@
 
           <div class="calc-row">
             <span class="calc-label">Redemption Peg (1:1)</span>
-            <span class="calc-val" style="color: var(--token-green-dark);"><%= cart.tokenSubtotal %> CT</span>
+            <span class="calc-val" style="color: var(--token-green-dark);"><%= cart.tokenSubtotal %> RT</span>
           </div>
 
           <div class="calc-row">
@@ -98,7 +98,7 @@
             <div>
               <div style="font-size: 1.35rem; font-weight: 700;">$<%= cart.subtotal.toFixed(2) %></div>
               <div style="font-size: 0.8rem; color: var(--token-green-dark); font-weight: 600; text-align: right;">
-                or <%= cart.tokenSubtotal %> CT
+                or <%= cart.tokenSubtotal %> RT
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@
           <div style="margin: 1.25rem 0; padding: 0.85rem; background-color: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-sm); font-size: 0.82rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
               <span>Your Token Balance:</span>
-              <strong><%= wallet.balance %> CT</strong>
+              <strong><%= wallet.balance %> RT</strong>
             </div>
             <% if (wallet.balance >= cart.tokenSubtotal) { %>
               <span style="color: var(--token-green-dark); font-weight: 600;">
@@ -115,7 +115,7 @@
               </span>
             <% } else { %>
               <span style="color: var(--text-secondary);">
-                You can apply your <%= wallet.balance %> CT as a $<%= wallet.balance %>.00 discount at checkout.
+                You can apply your <%= wallet.balance %> RT as a $<%= wallet.balance %>.00 discount at checkout.
               </span>
             <% } %>
           </div>

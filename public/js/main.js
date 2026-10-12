@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const deductionAmount = tokens * deductionRate;
       const netPayout = Math.max(0, tokens - deductionAmount);
 
-      if (calcTokensDisplay) calcTokensDisplay.textContent = tokens + " CT";
+      if (calcTokensDisplay) calcTokensDisplay.textContent = tokens + " RT";
       if (calcGrossDisplay) calcGrossDisplay.textContent = "$" + grossFiat.toFixed(2);
       if (calcDeductionDisplay) calcDeductionDisplay.textContent = "-$" + deductionAmount.toFixed(2);
       if (calcPayoutDisplay) calcPayoutDisplay.textContent = "$" + netPayout.toFixed(2);
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (cond.includes("fair")) condMultiplier = 0.5;
 
       const estimate = Math.max(15, Math.round(baseValue * brandMultiplier * condMultiplier));
-      tiEstimateDisplay.textContent = estimate + " CT";
+      tiEstimateDisplay.textContent = estimate + " RT";
       if (tiFiatDisplay) tiFiatDisplay.textContent = "$" + estimate + ".00 Marketplace Value";
     }
 

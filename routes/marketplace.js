@@ -155,7 +155,7 @@ router.post("/checkout", (req, res) => {
     if (wallet.balance < totalAmount) {
       req.session.toast = {
         type: "error",
-        message: `Insufficient token balance (${wallet.balance} CT available, required ${totalAmount} CT). Use Card or split payment.`
+        message: `Insufficient token balance (${wallet.balance} RT available, required ${totalAmount} RT). Use Card or split payment.`
       };
       return res.redirect("/checkout");
     }
@@ -165,7 +165,7 @@ router.post("/checkout", (req, res) => {
     // Split tokens + cash
     paidWithTokens = Math.min(wallet.balance, totalAmount);
     paidWithCash = totalAmount - paidWithTokens;
-    paymentLabel = `Split: ${paidWithTokens} CT + $${paidWithCash.toFixed(2)} Card`;
+    paymentLabel = `Split: ${paidWithTokens} RT + $${paidWithCash.toFixed(2)} Card`;
   } else {
     // Standard cash/card
     paidWithCash = totalAmount;
@@ -219,7 +219,7 @@ router.post("/checkout", (req, res) => {
 
   req.session.toast = {
     type: "success",
-    message: `Order #${orderId} confirmed! ${paidWithTokens > 0 ? `${paidWithTokens} CT redeemed.` : ""}`
+    message: `Order #${orderId} confirmed! ${paidWithTokens > 0 ? `${paidWithTokens} RT redeemed.` : ""}`
   };
 
   res.redirect(`/orders/${orderId}`);

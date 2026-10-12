@@ -193,10 +193,10 @@ class Store {
     this.products = [...INITIAL_PRODUCTS];
     
     // User wallet state
-    // Currency: USD ($). 1 CT = $1 in marketplace; 1 CT = $0.80 cash payout (20% conversion deduction)
+    // Currency: USD ($). 1 RT = $1 in marketplace; 1 RT = $0.80 cash payout (20% conversion deduction)
     this.wallet = {
-      tokenName: "Clothing Token",
-      tokenSymbol: "CT",
+      tokenName: "Revé Token",
+      tokenSymbol: "RT",
       currencyCode: "USD",
       currencySymbol: "$",
       tokenBalance: 150, // Initial demo balance to test spending or withdrawing
@@ -308,7 +308,7 @@ class Store {
         submissionDate: "2026-10-01T12:00:00Z",
         assessedValueTokens: 65,
         status: "Credited", // Statuses: 'Submitted', 'Under Review', 'Offer Ready', 'Credited', 'Declined'
-        statusMessage: "Accepted and 65 CT credited to wallet on Oct 2, 2026.",
+        statusMessage: "Accepted and 65 RT credited to wallet on Oct 2, 2026.",
         circularOutcome: "Listed on Marketplace"
       },
       {
@@ -325,7 +325,7 @@ class Store {
         submissionDate: "2026-10-04T11:15:00Z",
         assessedValueTokens: 85,
         status: "Credited",
-        statusMessage: "Accepted and 85 CT credited to wallet on Oct 5, 2026.",
+        statusMessage: "Accepted and 85 RT credited to wallet on Oct 5, 2026.",
         circularOutcome: "Listed on Marketplace"
       },
       {
@@ -342,7 +342,7 @@ class Store {
         submissionDate: "2026-10-11T14:20:00Z",
         assessedValueTokens: 110,
         status: "Offer Ready", // User can click "Accept Offer" to test crediting live!
-        statusMessage: "Assessment complete! Offer of 110 CT ($110.00 value) ready for your acceptance.",
+        statusMessage: "Assessment complete! Offer of 110 RT ($110.00 value) ready for your acceptance.",
         circularOutcome: "Pending User Acceptance"
       }
     ];

@@ -52,7 +52,7 @@ function calculateTradeInValuation(brand, category, condition) {
   else if (c === "fair") condMultiplier = 0.5;
 
   const calculated = Math.round(baseValue * brandMultiplier * condMultiplier);
-  return Math.max(15, calculated); // minimum 15 CT
+  return Math.max(15, calculated); // minimum 15 RT
 }
 
 // Landing & Trade-in Submission Form
@@ -92,7 +92,7 @@ router.post("/trade-in", upload.single("photo"), (req, res) => {
     submissionDate: new Date().toISOString(),
     assessedValueTokens: assessedTokens,
     status: "Offer Ready", // Instant MVP offer ready for immediate acceptance!
-    statusMessage: `Assessment complete! Offer of ${assessedTokens} CT ($${assessedTokens}.00 value) ready for your acceptance.`,
+    statusMessage: `Assessment complete! Offer of ${assessedTokens} RT ($${assessedTokens}.00 value) ready for your acceptance.`,
     circularOutcome: "Pending User Acceptance"
   };
 
@@ -100,7 +100,7 @@ router.post("/trade-in", upload.single("photo"), (req, res) => {
 
   req.session.toast = {
     type: "success",
-    message: `Trade-in submitted! We've generated an instant offer of ${assessedTokens} CT for your item.`
+    message: `Trade-in submitted! We've generated an instant offer of ${assessedTokens} RT for your item.`
   };
 
   res.redirect(`/trade-in/track`);
@@ -151,12 +151,12 @@ router.post("/trade-in/:id/accept", (req, res) => {
 
   // Update item status
   item.status = "Credited";
-  item.statusMessage = `Accepted! ${tokens} CT credited to your digital wallet on ${new Date().toLocaleDateString()}.`;
+  item.statusMessage = `Accepted! ${tokens} RT credited to your digital wallet on ${new Date().toLocaleDateString()}.`;
   item.circularOutcome = "Listed on Circular Marketplace / Hub Intake";
 
   req.session.toast = {
     type: "success",
-    message: `Success! ${tokens} CT has been credited to your Revé wallet. Spend it 1:1 on clothing or cash out.`
+    message: `Success! ${tokens} RT has been credited to your Revé wallet. Spend it 1:1 on clothing or cash out.`
   };
 
   res.redirect("/wallet");

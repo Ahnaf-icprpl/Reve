@@ -30,7 +30,7 @@
           <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.25rem;">USD</span>
         </div>
         <div class="detail-tokens">
-          <span class="detail-token-pill">✦ <%= product.tokens %> CT</span>
+          <span class="detail-token-pill">✦ <%= product.tokens %> RT</span>
           <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">(1:1 Value Peg)</span>
         </div>
       </div>
@@ -59,16 +59,16 @@
             Token Redemption Available
           </span>
           <span style="font-size: 0.82rem; font-weight: 600;">
-            Balance: <%= wallet.balance %> CT
+            Balance: <%= wallet.balance %> RT
           </span>
         </div>
         <% if (wallet.balance >= product.tokens) { %>
           <p style="font-size: 0.85rem; color: var(--token-green-dark); margin: 0;">
-            ✓ You have enough tokens! You can purchase this garment entirely with <strong><%= product.tokens %> CT</strong> without spending cash.
+            ✓ You have enough tokens! You can purchase this garment entirely with <strong><%= product.tokens %> RT</strong> without spending cash.
           </p>
         <% } else { %>
           <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
-            You can use your <strong><%= wallet.balance %> CT</strong> to discount this order by $<%= wallet.balance %>.00 and pay the remaining $<%= product.price - wallet.balance %> via card.
+            You can use your <strong><%= wallet.balance %> RT</strong> to discount this order by $<%= wallet.balance %>.00 and pay the remaining $<%= product.price - wallet.balance %> via card.
           </p>
         <% } %>
       </div>
@@ -113,7 +113,7 @@
           <input type="hidden" name="productId" value="<%= product.id %>">
           <input type="hidden" name="quantity" value="1">
           <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">
-            Add to Bag — $<%= product.price %> / <%= product.tokens %> CT
+            Add to Bag — $<%= product.price %> / <%= product.tokens %> RT
           </button>
         </form>
       </div>
@@ -140,7 +140,7 @@
                 <a href="/marketplace/<%= item.id %>" class="product-title"><%= item.title %></a>
                 <div class="product-price-row">
                   <span class="fiat-price">$<%= item.price %></span>
-                  <span class="token-price"><%= item.tokens %> CT</span>
+                  <span class="token-price"><%= item.tokens %> RT</span>
                 </div>
               </div>
             </div>

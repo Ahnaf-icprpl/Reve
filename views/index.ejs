@@ -37,7 +37,7 @@
             <span class="trust-label">Clean Water Preserved</span>
           </div>
           <div class="trust-item">
-            <span class="trust-val"><%= stats.tokensEarnedByCommunity %> CT</span>
+            <span class="trust-val"><%= stats.tokensEarnedByCommunity %> RT</span>
             <span class="trust-label">Community Tokens Issued</span>
           </div>
         </div>
@@ -53,14 +53,14 @@
           <div class="dual-token-comparison">
             <div class="comparison-box highlight">
               <span class="comparison-tag">Spend Inside Revé</span>
-              <span class="comparison-val">1 CT = $1.00</span>
+              <span class="comparison-val">1 RT = $1.00</span>
               <p class="comparison-desc">
                 Full 100% value retention when redeemed for curated circular clothing.
               </p>
             </div>
             <div class="comparison-box">
               <span class="comparison-tag">Convert to Cash</span>
-              <span class="comparison-val">1 CT = $0.80</span>
+              <span class="comparison-val">1 RT = $0.80</span>
               <p class="comparison-desc">
                 Cashing out incurs a 20% conversion deduction to keep value in the circular loop.
               </p>
@@ -72,7 +72,7 @@
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            <span>Your current wallet: <strong><%= wallet.balance %> CT</strong> ($<%= wallet.balance %>.00 in clothing)</span>
+            <span>Your current wallet: <strong><%= wallet.balance %> RT</strong> ($<%= wallet.balance %>.00 in clothing)</span>
           </div>
         </div>
       </div>
@@ -143,7 +143,7 @@
               </a>
               <div class="product-badges">
                 <span class="badge badge-condition"><%= product.condition %></span>
-                <span class="badge badge-token"><%= product.tokens %> CT Peg</span>
+                <span class="badge badge-token"><%= product.tokens %> RT Peg</span>
               </div>
               <div class="product-eco-tag">
                 💧 <%= product.ecoSavings.waterLiters.toLocaleString() %>L Saved
@@ -166,7 +166,7 @@
                   <span class="token-peg-tag">USD</span>
                 </div>
                 <div class="token-price">
-                  <span><%= product.tokens %> CT</span>
+                  <span><%= product.tokens %> RT</span>
                 </div>
               </div>
 

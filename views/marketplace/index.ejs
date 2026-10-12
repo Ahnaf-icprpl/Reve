@@ -10,7 +10,7 @@
         Circular Clothing & Textiles
       </h1>
       <p style="color: var(--text-secondary); max-width: 650px; font-size: 0.95rem;">
-        Discover pre-loved and verified circular garments. Every listing can be purchased with Clothing Tokens (CT) at a guaranteed 1:1 local currency peg.
+        Discover pre-loved and verified circular garments. Every listing can be purchased with Revé Tokens (RT) at a guaranteed 1:1 local currency peg.
       </p>
     </div>
   </section>
@@ -71,7 +71,7 @@
       <div class="card-white" style="padding: 1.25rem;">
         <span style="font-size: 0.72rem; font-weight: 700; color: var(--token-green); text-transform: uppercase;">Your Wallet</span>
         <div style="font-size: 1.4rem; font-weight: 700; margin: 0.25rem 0;">
-          <%= wallet.balance %> CT
+          <%= wallet.balance %> RT
         </div>
         <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;">
           Redeemable 1:1 on any item here without deduction.
@@ -123,7 +123,7 @@
                 </a>
                 <div class="product-badges">
                   <span class="badge badge-condition"><%= product.condition %></span>
-                  <span class="badge badge-token"><%= product.tokens %> CT Peg</span>
+                  <span class="badge badge-token"><%= product.tokens %> RT Peg</span>
                 </div>
                 <div class="product-eco-tag">
                   💧 <%= product.ecoSavings.waterLiters.toLocaleString() %>L Saved
@@ -146,7 +146,7 @@
                     <span class="token-peg-tag">USD</span>
                   </div>
                   <div class="token-price">
-                    <span><%= product.tokens %> CT</span>
+                    <span><%= product.tokens %> RT</span>
                   </div>
                 </div>
 

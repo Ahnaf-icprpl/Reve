@@ -31,6 +31,7 @@ app.use((req, res, next) => {
   res.locals.toast = req.session.toast || null;
   delete req.session.toast;
   res.locals.currentPath = req.path;
+  res.locals.currentUser = req.session.user || { name: "Ahnaf" };
   next();
 });
 

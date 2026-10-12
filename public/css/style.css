@@ -191,6 +191,47 @@ button, input, select, textarea {
   gap: 1rem;
 }
 
+/* User Profile Badge (PFP + Name) */
+.user-profile-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.25rem 0.85rem 0.25rem 0.35rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.user-profile-nav:hover {
+  border-color: var(--text-primary);
+  background-color: var(--border-subtle);
+}
+
+.profile-pfp-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
 .token-balance-chip {
   display: inline-flex;
   align-items: center;

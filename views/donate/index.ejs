@@ -39,21 +39,19 @@
             <input type="text" id="donTitle" name="title" class="form-input" placeholder="e.g. Box of everyday winter cotton tees & worn jeans" required>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="form-group">
-              <label class="form-label" for="itemCount">Estimated Number of Garments</label>
-              <input type="number" id="itemCount" name="itemCount" class="form-input" min="1" max="100" value="6" required>
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="itemCount">Estimated Number of Garments</label>
+            <input type="text" id="itemCount" name="itemCount" class="form-input" placeholder="e.g. 6 garments, 1 bag, etc." value="6 garments" required>
+          </div>
 
-            <div class="form-group">
-              <label class="form-label" for="intendedProgram">How badly damaged are the clothes? (Circle less)</label>
-              <select id="intendedProgram" name="intendedProgram" class="form-select" required>
-                <option value="Minor or No Damage — Wearable (Circle Less)">Minor or No Damage — Wearable (Circle Less: Community Reuse)</option>
-                <option value="Moderately Damaged — Fixable (Circle Less: Repair & Upcycle)">Moderately Damaged — Fixable (Circle Less: Repair & Upcycle)</option>
-                <option value="Severely Damaged — Torn or frayed (Fiber Shredding)" selected>Severely Damaged — Torn, frayed, or unwearable (Fiber Shredding)</option>
-                <option value="Mixed condition — Let Revé assess">Mixed condition — Let Revé assess</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="intendedProgram">How badly damaged are the clothes? (Circle less)</label>
+            <select id="intendedProgram" name="intendedProgram" class="form-select" required>
+              <option value="Minor or No Damage — Wearable (Circle Less)">Minor or No Damage — Wearable (Circle Less: Community Reuse)</option>
+              <option value="Moderately Damaged — Fixable (Circle Less: Repair & Upcycle)">Moderately Damaged — Fixable (Circle Less: Repair & Upcycle)</option>
+              <option value="Severely Damaged — Torn or frayed (Fiber Shredding)" selected>Severely Damaged — Torn, frayed, or unwearable (Fiber Shredding)</option>
+              <option value="Mixed condition — Let Revé assess">Mixed condition — Let Revé assess</option>
+            </select>
           </div>
 
           <div class="form-group">

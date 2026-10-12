@@ -16,6 +16,7 @@ router.post("/donate", (req, res) => {
   const { title, itemCount, categories, fabrics, conditionSummary, intendedProgram, dropOffMethod } = req.body;
 
   const count = parseInt(itemCount, 10) || 1;
+  const displayCount = (itemCount && typeof itemCount === 'string' && itemCount.trim()) ? itemCount.trim() : `${count} Garments`;
   const cats = Array.isArray(categories) ? categories : (categories ? [categories] : ["Mixed Apparel"]);
   const fabArray = Array.isArray(fabrics) ? fabrics : (fabrics ? [fabrics] : ["Cotton & Mixed Fibers"]);
 
@@ -28,8 +29,8 @@ router.post("/donate", (req, res) => {
 
   const newDonation = {
     id: donationId,
-    title: title || `${count} Item Textile & Garment Donation`,
-    itemCount: count,
+    title: title || `${displayCount} Textile & Garment Donation`,
+    itemCount: displayCount,
     categories: cats,
     fabrics: fabArray,
     conditionSummary: conditionSummary || "Clean textile donation",
@@ -64,7 +65,7 @@ router.get("/donate/track", (req, res) => {
   let totalItems = 0;
 
   store.donations.forEach(d => {
-    totalItems += d.itemCount || 1;
+    totalItems += parseInt(d.itemCount, 10) || 1;
     totalKg += d.impactMetrics?.textilesDivertedKg || 0;
     totalWater += d.impactMetrics?.waterSavedLiters || 0;
   });

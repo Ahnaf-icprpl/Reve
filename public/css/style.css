@@ -1409,25 +1409,6 @@ h1, h2, h3, h4, h5 {
   max-width: 320px;
 }
 
-.token-peg-summary-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--bg-white);
-  border: 1px solid var(--token-border);
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  color: var(--token-green-dark);
-  font-weight: 600;
-}
-
-.peg-dot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--token-green);
-  border-radius: 50%;
-}
 
 .footer-heading {
   font-size: 0.8rem;

@@ -96,7 +96,7 @@
             <option value="featured" <%= selectedSort === 'featured' ? 'selected' : '' %>>Featured</option>
             <option value="price-asc" <%= selectedSort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
             <option value="price-desc" <%= selectedSort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
-            <option value="eco" <%= selectedSort === 'eco' ? 'selected' : '' %>>Highest Water Saved</option>
+            <option value="eco" <%= selectedSort === 'eco' ? 'selected' : '' %>>Highest Eco Impact</option>
           </select>
         </form>
       </div>
@@ -121,9 +121,6 @@
                 <div class="product-badges">
                   <span class="badge badge-condition"><%= product.condition %></span>
                   <span class="badge badge-token"><%= product.tokens %> RT Peg</span>
-                </div>
-                <div class="product-eco-tag">
-                  💧 <%= product.ecoSavings.waterLiters.toLocaleString() %>L Saved
                 </div>
               </div>
 

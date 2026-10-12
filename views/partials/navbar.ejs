@@ -33,7 +33,7 @@
 
       <!-- User profile badge: circle pfp icon and name -->
       <div class="navbar-actions">
-        <a href="/profile" class="user-profile-nav" title="View Profile">
+        <a href="/profile" class="user-profile-nav" title="View Profile — I AM THE CEO">
           <div class="profile-pfp-circle" aria-label="Profile picture">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -41,6 +41,11 @@
             </svg>
           </div>
           <span class="profile-name"><%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %></span>
+          <span class="badge-icon-item" style="width: 22px; height: 22px; margin-left: -0.2rem;" title="I AM THE CEO">
+            <svg class="badge-icon-svg diamond-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+            </svg>
+          </span>
         </a>
       </div>
     </div>

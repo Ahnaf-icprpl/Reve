@@ -155,7 +155,8 @@ Reve/
 │   │   └── style.css        # Minimalist white-base design system
 │   ├── js/
 │   │   └── main.js          # Interactive calculators & UI scripts
-│   └── uploads/             # Ephemeral upload buffer
+│   └── img/
+│       └── logo.png         # Brand logo
 └── views/
     ├── partials/            # Header, Navbar, Footer, and Toast partials
     ├── index.ejs            # Editorial landing page

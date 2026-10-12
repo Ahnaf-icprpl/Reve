@@ -34,10 +34,7 @@ pids/
 .parcel-cache/
 .tmp/
 
-# User-uploaded assets and temporary files
-public/uploads/*
-!public/uploads/.gitkeep
-uploads/
+# Temporary files
 tmp/
 temp/
 

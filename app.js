@@ -27,13 +27,18 @@ app.use(
 );
 
 // Global view locals middleware
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.toast = req.session.toast || null;
   delete req.session.toast;
   res.locals.currentPath = req.path;
-  const store = require("./data/store");
-  res.locals.currentUser = req.session.user || { name: "Ahnaf", role: "admin" };
-  res.locals.badges = store.getUserBadges();
+  res.locals.currentUser = req.session.user || { name: "Ahnaf", role: "admin", id: "usr-ahnaf-ceo" };
+
+  const db = require("./services/db");
+  try {
+    res.locals.badges = await db.getUserBadges(res.locals.currentUser.id || "usr-ahnaf-ceo");
+  } catch (err) {
+    res.locals.badges = [];
+  }
   next();
 });
 

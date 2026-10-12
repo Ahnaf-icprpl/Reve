@@ -41,11 +41,11 @@
             </svg>
           </div>
           <span class="profile-name"><%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %></span>
-          <span class="badge-icon-item" style="width: 22px; height: 22px; margin-left: -0.2rem;" title="I AM THE CEO">
-            <svg class="badge-icon-svg diamond-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
-            </svg>
-          </span>
+          <% if (typeof badges !== 'undefined' && badges && badges.length > 0) { %>
+            <span class="badge-icon-item" style="width: 22px; height: 22px; margin-left: -0.2rem;" title="<%= badges[0].title %>">
+              <%- badges[0].svg %>
+            </span>
+          <% } %>
         </a>
       </div>
     </div>

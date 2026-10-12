@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const store = require("../data/store");
 const scoring = require("../services/scoring");
+const db = require("../services/db");
 
 // User Profile Page
-router.get("/profile", (req, res) => {
+router.get("/profile", async (req, res) => {
   const wallet = store.getWalletSummary();
   const cart = store.getCart();
   const orders = store.orders;
@@ -45,7 +46,7 @@ router.get("/profile", (req, res) => {
     orders,
     tradeIns,
     donations,
-    badges: store.getUserBadges(),
+    badges: await db.getUserBadges((req.session.user && req.session.user.id) || "usr-ahnaf-ceo"),
     impact: {
       waterSavedLiters: personalWaterSaved.toLocaleString(),
       co2AvoidedKg: Number(personalCo2Saved.toFixed(1)),

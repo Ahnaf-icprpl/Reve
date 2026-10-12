@@ -356,7 +356,7 @@ class Store {
         categories: ["Tops", "Bottoms", "Textile Scraps"],
         fabrics: ["Cotton", "Polyester Blend", "Denim"],
         conditionSummary: "Mixed wearable and worn items",
-        intendedProgram: "Fiber Shredding & Circular Upcycling",
+        intendedProgram: "Severely Damaged — Fiber Shredding (Circle Less)",
         dropOffMethod: "Prepaid Eco-Shipping Label",
         trackingNumber: "REV-CIRC-8821948",
         submissionDate: "2026-10-06T11:00:00Z",

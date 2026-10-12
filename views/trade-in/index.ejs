@@ -42,7 +42,7 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label" for="tiBrand">Brand</label>
-              <input type="text" id="tiBrand" name="brand" list="brandOptions" class="form-input" placeholder="Type or select a brand..." required value="Patagonia" autocomplete="off">
+              <input type="text" id="tiBrand" name="brand" list="brandOptions" class="form-input" placeholder="Type or select a brand..." required autocomplete="off">
               <datalist id="brandOptions">
                 <option value="Arc'teryx">
                 <option value="Patagonia">
@@ -143,37 +143,37 @@
 
       <!-- Live Dynamic Valuation Estimator Sidebar -->
       <aside>
-        <div class="card-white" style="border-color: var(--token-green); position: sticky; top: 6rem;">
+        <div class="card-white" style="position: sticky; top: 6rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <span class="section-label" style="margin: 0;">Instant Valuation Preview</span>
-            <span class="badge badge-token">1:1 Token Peg</span>
+            <span class="section-label" style="margin: 0;">Estimated Offer</span>
+            <span class="badge badge-condition">Not Defined Yet</span>
           </div>
 
           <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">
             Estimated Offer:
           </h3>
 
-          <div style="padding: 1.5rem; background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); text-align: center; margin-bottom: 1.5rem;">
-            <div id="tiEstimateDisplay" style="font-size: 2.75rem; font-weight: 800; color: var(--token-green-dark); line-height: 1;">
-              115 RT
+          <div style="padding: 1.5rem; background-color: var(--bg-white); border: 1px dashed var(--border-light); border-radius: var(--radius-sm); text-align: center; margin-bottom: 1.5rem;">
+            <div id="tiEstimateDisplay" style="font-size: 2.25rem; font-weight: 700; color: var(--text-muted); line-height: 1;">
+              — RT
             </div>
-            <div id="tiFiatDisplay" style="font-size: 0.88rem; font-weight: 600; color: var(--token-green-dark); margin-top: 0.35rem;">
-              $115.00 Marketplace Purchasing Value
+            <div id="tiFiatDisplay" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">
+              Not defined yet &bull; Assessed upon intake review
             </div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
             <div style="display: flex; gap: 0.5rem;">
               <span style="color: var(--token-green); font-weight: 700;">✓</span>
-              <span><strong>100% Value Inside Revé:</strong> Spend the full token amount on any clothing listing in our marketplace.</span>
+              <span><strong>Inspection-Based Offer:</strong> Every item is individually assessed based on brand tier, demand, and physical fiber condition.</span>
             </div>
             <div style="display: flex; gap: 0.5rem;">
               <span style="color: var(--token-green); font-weight: 700;">✓</span>
-              <span><strong>Cash-out Option:</strong> Convert to dollars ($) via digital wallet whenever you prefer (subject to 20% conversion deduction).</span>
+              <span><strong>1:1 Value Peg:</strong> Accepted tokens hold guaranteed $1.00 purchasing power on circular clothing listings.</span>
             </div>
             <div style="display: flex; gap: 0.5rem;">
               <span style="color: var(--token-green); font-weight: 700;">✓</span>
-              <span><strong>Prepaid Shipping:</strong> A prepaid drop-off label is generated immediately upon offer acceptance.</span>
+              <span><strong>No Obligation:</strong> Review the official token valuation in your submissions dashboard before accepting.</span>
             </div>
           </div>
 

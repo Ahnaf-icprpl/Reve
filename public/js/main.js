@@ -29,6 +29,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (tiBrandInput && tiCategorySelect && tiConditionSelect && tiEstimateDisplay) {
     function calculateInstantEstimate() {
+      const brand = (tiBrandInput.value || "").trim();
+      if (!brand) {
+        tiEstimateDisplay.textContent = "— RT";
+        tiEstimateDisplay.style.color = "var(--text-muted)";
+        if (tiFiatDisplay) {
+          tiFiatDisplay.textContent = "Not defined yet \u2022 Assessed upon intake review";
+        }
+        return;
+      }
+
       let baseValue = 35;
       const cat = (tiCategorySelect.value || "").toLowerCase();
       if (cat === "outerwear") baseValue = 85;
@@ -38,13 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (cat === "tops") baseValue = 38;
       else if (cat === "accessories") baseValue = 35;
 
-      const brand = (tiBrandInput.value || "").toLowerCase();
       let brandMultiplier = 1.0;
-      if (brand.includes("arc'teryx") || brand.includes("patagonia") || brand.includes("a.p.c.") || brand.includes("acne") || brand.includes("barbour")) {
+      const b = brand.toLowerCase();
+      if (b.includes("arc'teryx") || b.includes("patagonia") || b.includes("a.p.c.") || b.includes("acne") || b.includes("barbour")) {
         brandMultiplier = 1.6;
-      } else if (brand.includes("everlane") || brand.includes("sezane") || brand.includes("sézane") || brand.includes("reformation") || brand.includes("levi") || brand.includes("cos")) {
+      } else if (b.includes("everlane") || b.includes("sezane") || b.includes("sézane") || b.includes("reformation") || b.includes("levi") || b.includes("cos")) {
         brandMultiplier = 1.25;
-      } else if (brand.includes("zara") || brand.includes("h&m") || brand.includes("uniqlo") || brand.includes("gap")) {
+      } else if (b.includes("zara") || b.includes("h&m") || b.includes("uniqlo") || b.includes("gap")) {
         brandMultiplier = 0.75;
       }
 
@@ -56,14 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (cond.includes("fair")) condMultiplier = 0.5;
 
       const estimate = Math.max(15, Math.round(baseValue * brandMultiplier * condMultiplier));
-      tiEstimateDisplay.textContent = estimate + " RT";
-      if (tiFiatDisplay) tiFiatDisplay.textContent = "$" + estimate + ".00 Marketplace Value";
+      tiEstimateDisplay.textContent = `~${estimate} RT`;
+      tiEstimateDisplay.style.color = "var(--token-green-dark)";
+      if (tiFiatDisplay) tiFiatDisplay.textContent = `Indicative ~${estimate} RT ($${estimate}.00) \u2022 Subject to intake inspection`;
     }
 
     tiBrandInput.addEventListener("input", calculateInstantEstimate);
     tiCategorySelect.addEventListener("change", calculateInstantEstimate);
     tiConditionSelect.addEventListener("change", calculateInstantEstimate);
-    calculateInstantEstimate();
   }
 
     // Quick brand chips selection

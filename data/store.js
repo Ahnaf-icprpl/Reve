@@ -193,7 +193,7 @@ class Store {
     this.products = [...INITIAL_PRODUCTS];
     
     // User wallet state
-    // Currency: USD ($). 1 RT = $1 in marketplace; 1 RT = $0.80 cash payout (20% conversion deduction)
+    // 1 RT = 1 RP in marketplace; 1 RT = 0.80 RP cash payout (20% conversion deduction)
     this.wallet = {
       tokenName: "Revé Token",
       tokenSymbol: "RT",

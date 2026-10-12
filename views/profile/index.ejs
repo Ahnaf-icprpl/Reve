@@ -45,18 +45,6 @@
           </div>
         </div>
 
-        <!-- Quick Action Buttons -->
-        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a href="/trade-in" class="btn btn-secondary btn-sm">
-            + New Trade-In
-          </a>
-          <a href="/donate" class="btn btn-secondary btn-sm">
-            + Donate Textiles
-          </a>
-          <a href="/marketplace" class="btn btn-primary btn-sm">
-            Shop Marketplace &rarr;
-          </a>
-        </div>
       </div>
     </div>
   </section>
@@ -74,7 +62,7 @@
           <%= wallet.balance %> RT
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-          Guaranteed 1:1 ($<%= wallet.balance %>.00) marketplace purchasing value.
+          Guaranteed 1:1 (<%= wallet.balance %> RP) marketplace purchasing value.
         </p>
         <a href="/marketplace" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
           Spend on Clothing &rarr;

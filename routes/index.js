@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
 // About page
 router.get("/about", (req, res) => {
   res.render("about/index", {
-    title: "About the Revé Circular Economy — Revé",
+    title: "About Revé — Revé",
     wallet: store.getWalletSummary(),
     cart: store.getCart()
   });

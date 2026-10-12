@@ -1,4 +1,4 @@
-// In-memory data store for Revé circular fashion MVP
+// In-memory data store for Revé MVP
 // Supports state mutations across session and requests
 
 const INITIAL_PRODUCTS = [
@@ -366,7 +366,7 @@ class Store {
           waterSavedLiters: 9800,
           landfillDivertedPct: 100
         },
-        beneficiaryNotes: "Sorted at Revé Circular Hub Seattle: 5 garments repaired for community clothing drive, 3 shredded into acoustic insulation."
+        beneficiaryNotes: "Sorted at Revé Hub Seattle: 5 garments repaired for community clothing drive, 3 shredded into acoustic insulation."
       }
     ];
   }

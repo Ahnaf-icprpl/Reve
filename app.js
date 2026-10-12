@@ -73,7 +73,7 @@ app.use((err, req, res, next) => {
 // Start Server if run directly
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`🌿 Revé Circular Fashion Marketplace running at http://localhost:${PORT}`);
+    console.log(`🌿 Revé running at http://localhost:${PORT}`);
   });
 }
 

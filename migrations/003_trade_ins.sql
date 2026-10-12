@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS trade_ins (
     id VARCHAR(64) PRIMARY KEY,
-    user_id VARCHAR(64) REFERENCES users(id) ON DELETE SET NULL,
+    user_id VARCHAR(64),
     title VARCHAR(255) NOT NULL,
     brand VARCHAR(128) NOT NULL,
     category VARCHAR(64) NOT NULL,

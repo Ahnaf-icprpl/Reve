@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS wallets (
     id VARCHAR(64) PRIMARY KEY,
-    user_id VARCHAR(64) NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    user_id VARCHAR(64) NOT NULL UNIQUE,
     token_balance INTEGER NOT NULL DEFAULT 0, -- Balance in RT
     total_earned_tokens INTEGER NOT NULL DEFAULT 0,
     total_spent_tokens INTEGER NOT NULL DEFAULT 0,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS wallets (
 CREATE TABLE IF NOT EXISTS wallet_transactions (
     id VARCHAR(64) PRIMARY KEY,
     wallet_id VARCHAR(64) NOT NULL REFERENCES wallets(id) ON DELETE CASCADE,
-    user_id VARCHAR(64) REFERENCES users(id) ON DELETE SET NULL,
+    user_id VARCHAR(64),
     transaction_type VARCHAR(64) NOT NULL, -- 'TRADE_IN_CREDIT', 'MARKETPLACE_PURCHASE', 'CASH_CONVERSION_WITHDRAWAL', 'TOPUP'
     title VARCHAR(255) NOT NULL,
     token_change INTEGER NOT NULL, -- Positive for credit, negative for debit

@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS donations (
     id VARCHAR(64) PRIMARY KEY,
-    user_id VARCHAR(64) REFERENCES users(id) ON DELETE SET NULL,
+    user_id VARCHAR(64),
     title VARCHAR(255) NOT NULL,
     item_count_label VARCHAR(64) NOT NULL, -- e.g. '6 garments'
     item_count_numeric INTEGER DEFAULT 1,

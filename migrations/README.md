@@ -6,7 +6,7 @@ This folder contains modular SQL migration files structured by functional domain
 
 | File | Domain | Description |
 |---|---|---|
-| `001_users.sql` | **Users & Staff** | User accounts, authentication credentials, profiles, and roles |
+| `001_users.sql` | **Users Cleanup** | Drops users table (`DROP TABLE IF EXISTS users CASCADE;`) |
 | `002_products.sql` | **Catalog & Inventory** | Circular clothing marketplace listings, conditions, sizing, prices (USD & RT), and eco-savings |
 | `003_trade_ins.sql` | **Trade-in Intake** | Wardrobe trade-in submissions, valuation assessments, and offer lifecycle |
 | `004_donations.sql` | **Donations & Reclamation** | Textile donations, damage assessments (Circle less), tracking passes, and landfill diversion |

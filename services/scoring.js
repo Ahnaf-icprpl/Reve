@@ -74,7 +74,11 @@ function calculateTradeInValuation(params = {}) {
       valuationTokens: 0,
       fiatValue: 0,
       scoreGrade: "Pending",
-      notes: "Brand required for assessment"
+      notes: "Brand required for assessment",
+      displayTokens: "— RT",
+      displaySummary: "Not defined yet \u2022 Assessed upon intake review",
+      placeholderEstimate: "— RT",
+      placeholderSummary: "Not defined yet \u2022 Assessed upon intake review"
     };
   }
 
@@ -117,7 +121,11 @@ function calculateTradeInValuation(params = {}) {
     scoreGrade: conditionInfo.scoreGrade,
     conditionLabel: conditionInfo.label,
     estimatedWaterSaved: Math.round(valuationTokens * 25), // ~25L water saved per valuation point
-    estimatedCo2Avoided: Number((valuationTokens * 0.08).toFixed(1))
+    estimatedCo2Avoided: Number((valuationTokens * 0.08).toFixed(1)),
+    displayTokens: `~${valuationTokens} RT`,
+    displaySummary: `Indicative ~${valuationTokens} RT ($${fiatValue}.00) \u2022 Condition Grade: ${conditionInfo.scoreGrade}`,
+    placeholderEstimate: "— RT",
+    placeholderSummary: "Not defined yet \u2022 Assessed upon intake review"
   };
 }
 

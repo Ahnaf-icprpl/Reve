@@ -1090,6 +1090,7 @@ async function getDonations(userId) {
       status: d.status,
       submissionDate: d.created_at,
       beneficiaryNotes: d.beneficiary_notes,
+      qrCode: d.qr_code,
       categories: catRes.rows.map(c => c.category_name),
       impactMetrics: {
         textilesDivertedKg: Number(d.textiles_diverted_kg || 0),
@@ -1114,6 +1115,15 @@ async function getDonationById(donationId) {
   if (donRes.rows.length === 0) return null;
   const d = donRes.rows[0];
 
+  let qrCode = d.qr_code;
+  if (!qrCode && d.tracking_number) {
+    try {
+      const QRCode = require("qrcode");
+      qrCode = await QRCode.toString(d.tracking_number, { type: "svg", margin: 1, width: 120 });
+      await p.query("UPDATE donations SET qr_code = $1 WHERE id = $2", [qrCode, d.id]);
+    } catch (_) {}
+  }
+
   const catRes = await p.query(
     "SELECT category_name FROM donation_categories WHERE donation_id = $1",
     [d.id]
@@ -1129,6 +1139,7 @@ async function getDonationById(donationId) {
     status: d.status,
     submissionDate: d.created_at,
     beneficiaryNotes: d.beneficiary_notes,
+    qrCode: qrCode || d.qr_code,
     categories: catRes.rows.map(c => c.category_name),
     impactMetrics: {
       textilesDivertedKg: Number(d.textiles_diverted_kg || 0),
@@ -1154,10 +1165,16 @@ async function createDonation({
   textilesDivertedKg = 0,
   waterSavedLiters = 0,
   landfillDivertedPct = 100,
-  beneficiaryNotes
+  beneficiaryNotes,
+  qrCode = null
 }) {
   if (!id || !userId || !trackingNumber) {
     throw new Error("Missing required donation fields. Zero fallback allowed.");
+  }
+  let finalQrCode = qrCode;
+  if (!finalQrCode) {
+    const QRCode = require("qrcode");
+    finalQrCode = await QRCode.toString(trackingNumber, { type: "svg", margin: 1, width: 120 });
   }
   const p = getPool();
   const client = await p.connect();
@@ -1169,8 +1186,8 @@ async function createDonation({
         id, user_id, title, item_count_label, item_count_numeric,
         damage_assessment, drop_off_method, tracking_number, status,
         textiles_diverted_kg, water_saved_liters, landfill_diverted_pct,
-        beneficiary_notes
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pass Generated', $9, $10, $11, $12)`,
+        beneficiary_notes, qr_code
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pass Generated', $9, $10, $11, $12, $13)`,
       [
         id,
         userId,
@@ -1183,7 +1200,8 @@ async function createDonation({
         textilesDivertedKg,
         waterSavedLiters,
         landfillDivertedPct,
-        beneficiaryNotes
+        beneficiaryNotes,
+        finalQrCode
       ]
     );
 

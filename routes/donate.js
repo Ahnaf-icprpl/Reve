@@ -35,6 +35,8 @@ router.post("/donate", async (req, res, next) => {
 
     const donationId = "DON-" + Math.floor(1000 + Math.random() * 9000);
     const trackingNumber = "REV-CIRC-" + Math.floor(1000000 + Math.random() * 9000000);
+    const QRCode = require("qrcode");
+    const qrCode = await QRCode.toString(trackingNumber, { type: "svg", margin: 1, width: 120 });
 
     const impact = scoring.calculateDonationImpact({
       itemCount: count,
@@ -42,7 +44,6 @@ router.post("/donate", async (req, res, next) => {
       fabrics: fabArray,
       damageAssessment: intendedProgram
     });
-
     await db.createDonation({
       id: donationId,
       userId,
@@ -56,7 +57,8 @@ router.post("/donate", async (req, res, next) => {
       textilesDivertedKg: impact.textilesDivertedKg,
       waterSavedLiters: impact.waterSavedLiters,
       landfillDivertedPct: impact.landfillDivertedPct,
-      beneficiaryNotes: `Designated for ${intendedProgram || "Zero-Landfill Circular Recycling"}. Drop off using your QR pass or attach the prepaid label.`
+      beneficiaryNotes: `Designated for ${intendedProgram || "Zero-Landfill Circular Recycling"}. Drop off using your QR pass or attach the prepaid label.`,
+      qrCode
     });
 
     req.session.toast = {

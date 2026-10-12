@@ -369,6 +369,25 @@ class Store {
         beneficiaryNotes: "Sorted at Revé Hub Seattle: 5 garments repaired for community clothing drive, 3 shredded into acoustic insulation."
       }
     ];
+
+    // User Badges (supports multiple badges per user)
+    this.badges = [
+      {
+        id: "badge-ceo",
+        title: "I AM THE CEO",
+        icon: "diamond",
+        description: "Chief Executive Officer / Founder Badge"
+      }
+    ];
+
+    this.userBadges = [
+      {
+        id: "badge-ceo",
+        title: "I AM THE CEO",
+        icon: "diamond",
+        description: "Chief Executive Officer / Founder Badge"
+      }
+    ];
   }
 
   // --- Wallet Helpers ---
@@ -390,6 +409,10 @@ class Store {
       deductionAmount: Number(deductionAmount.toFixed(2)),
       ledger: this.wallet.ledger
     };
+  }
+
+  getUserBadges() {
+    return this.userBadges || [];
   }
 
   getPlatformMetrics() {

@@ -45,6 +45,7 @@ router.get("/profile", (req, res) => {
     orders,
     tradeIns,
     donations,
+    badges: store.getUserBadges(),
     impact: {
       waterSavedLiters: personalWaterSaved.toLocaleString(),
       co2AvoidedKg: Number(personalCo2Saved.toFixed(1)),

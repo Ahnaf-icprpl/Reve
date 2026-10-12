@@ -12,6 +12,7 @@ This folder contains modular SQL migration files structured by functional domain
 | `004_donations.sql` | **Donations & Reclamation** | Textile donations, damage assessments (Circle less), tracking passes, and landfill diversion |
 | `005_tokens_and_ledger.sql` | **Token Economy (RT)** | Wallets, token balances, transaction audit ledger, and conversion deductions |
 | `006_orders.sql` | **Orders & Fulfillment** | Customer checkout records, line items, token/cash split payments, and delivery addresses |
+| `007_badges.sql` | **User Badges & Honors** | Badges and user_badges tables supporting multiple badges (default "I AM THE CEO" with diamond icon) |
 
 ## Running Migrations
 

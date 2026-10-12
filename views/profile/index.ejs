@@ -20,9 +20,24 @@
               <h1 class="editorial-heading" style="font-size: 2.25rem; line-height: 1.1; margin: 0;">
                 <%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : 'Ahnaf' %>
               </h1>
-              <span class="badge badge-token" style="font-size: 0.75rem;">
-                ✦ Circular Member
-              </span>
+              <div class="user-badges-row">
+                <% if (typeof badges !== 'undefined' && badges && badges.length > 0) { %>
+                  <% badges.forEach(badge => { %>
+                    <div class="badge-icon-item" title="<%= badge.title %><%= badge.description ? ' — ' + badge.description : '' %>" aria-label="<%= badge.title %>">
+                      <% if (badge.icon === 'diamond') { %>
+                        <svg class="badge-icon-svg diamond-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                        </svg>
+                      <% } else { %>
+                        <svg class="badge-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      <% } %>
+                      <span class="badge-tooltip"><%= badge.title %></span>
+                    </div>
+                  <% }) %>
+                <% } %>
+              </div>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
               Member since October 2026 &bull; Active Participant in Textile Reclamation

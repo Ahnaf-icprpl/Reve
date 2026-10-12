@@ -15,7 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/img", express.static(path.join(__dirname, "public/img")));
 
 // Session setup for flash messages and demo persistence
 app.use(

@@ -1,23 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const path = require("path");
 const db = require("../services/db");
 const scoring = require("../services/scoring");
+const { uploadMedia } = require("../services/cloudinary");
 
-// Multer setup for mock trade-in image uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, "tradein-" + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Memory storage for streaming directly to Cloudinary
+const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
 // Server-side Trade-in Valuation API Endpoint
@@ -63,7 +55,11 @@ router.post("/trade-in", upload.single("photo"), async (req, res, next) => {
 
     let photoUrl = null;
     if (req.file) {
-      photoUrl = `/uploads/${req.file.filename}`;
+      const uploadResult = await uploadMedia(req.file.buffer, {
+        folder: "reve/trade-ins",
+        public_id: `tradein-${Date.now()}`
+      });
+      photoUrl = uploadResult.secure_url;
     } else if (photoUrlInput && photoUrlInput.trim()) {
       photoUrl = photoUrlInput.trim();
     }

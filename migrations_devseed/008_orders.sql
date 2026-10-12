@@ -20,6 +20,6 @@ INSERT INTO order_items (
     order_id, product_id, title, brand, unit_price, unit_tokens, quantity, image_url
 ) VALUES (
     'REV-1049', 'prod-4', 'Acne Studios Asymmetric Grid Panel Shirt', 'Acne Studios',
-    60.00, 60, 1, '/img/clothes/6.png'
+    60.00, 60, 1, 'https://res.cloudinary.com/arwppqjt/image/upload/v1791828945/reve/clothes/6.png'
 )
 ON CONFLICT DO NOTHING;

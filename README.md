@@ -121,6 +121,7 @@ Reve/
 ├── README.md                # Project documentation
 ├── services/
 │   ├── db.js                # PostgreSQL database service (zero fallback)
+│   ├── cloudinary.js        # Cloudinary media management & upload service
 │   └── scoring.js           # Environmental savings & valuation algorithms
 ├── migrations/              # Modular SQL database migrations
 │   ├── 001_users.sql        # Users credentials & profiles
@@ -154,9 +155,7 @@ Reve/
 │   │   └── style.css        # Minimalist white-base design system
 │   ├── js/
 │   │   └── main.js          # Interactive calculators & UI scripts
-│   ├── img/
-│   │   └── clothes/         # Garment asset folder
-│   └── uploads/             # User upload storage
+│   └── uploads/             # Ephemeral upload buffer
 └── views/
     ├── partials/            # Header, Navbar, Footer, and Toast partials
     ├── index.ejs            # Editorial landing page

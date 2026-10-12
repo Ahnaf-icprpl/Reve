@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS badges (
 
 CREATE TABLE IF NOT EXISTS user_badges (
     id SERIAL PRIMARY KEY,
-    user_id VARCHAR(64) NOT NULL,
+    user_id VARCHAR(64) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     badge_id VARCHAR(64) NOT NULL REFERENCES badges(id) ON DELETE CASCADE,
     awarded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_user_badge UNIQUE (user_id, badge_id)
@@ -26,3 +26,8 @@ CREATE INDEX IF NOT EXISTS idx_user_badges_badge_id ON user_badges(badge_id);
 INSERT INTO badges (id, title, icon, description)
 VALUES ('badge-ceo', 'I AM THE CEO', 'diamond', 'Chief Executive Officer / Founder Badge')
 ON CONFLICT (id) DO NOTHING;
+
+-- Award default badge to seeded CEO account
+INSERT INTO user_badges (user_id, badge_id)
+VALUES ('usr-ahnaf-ceo', 'badge-ceo')
+ON CONFLICT (user_id, badge_id) DO NOTHING;

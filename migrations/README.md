@@ -12,8 +12,20 @@ This folder contains modular SQL migration files structured by functional domain
 | `004_donations.sql` | **Donations & Reclamation** | Textile donations, damage assessments (Circle less), tracking passes, and landfill diversion |
 | `005_tokens_and_ledger.sql` | **Token Economy (RT)** | Wallets, token balances, transaction audit ledger, and conversion deductions |
 | `006_orders.sql` | **Orders & Fulfillment** | Customer checkout records, line items, token/cash split payments, and delivery addresses |
-| `007_badges.sql` | **User Badges & Honors** | Badges and user_badges tables supporting multiple badges (default "I AM THE CEO" with diamond icon) |
+| `007_badges.sql` | **User Badges & Honors** | Badges and user_badges tables supporting multiple badges per user |
+| `008_cart_and_metrics.sql` | **Cart & Metrics** | Shopping cart items persistence and dynamic platform metrics schema |
 
+## Development Seed Data
+
+Seed data migrations have been isolated into `migrations_devseed/` numbered sequentially from `001`:
+- `001_users.sql` — Seed founder user (`usr-ahnaf-ceo`)
+- `002_badges.sql` — Seed founder badge (`badge-ceo`) and assignment
+- `003_platform_metrics.sql` — Seed platform circular metrics
+- `004_products.sql` — Seed catalog products (`prod-1` through `prod-9`)
+- `005_wallets.sql` — Seed wallet and ledger transactions
+- `006_trade_ins.sql` — Seed wardrobe trade-in evaluations
+- `007_donations.sql` — Seed textile donations and categories
+- `008_orders.sql` — Seed marketplace orders and order items
 ## Running Migrations
 
 To run migrations with idempotency and history tracking:

@@ -22,12 +22,3 @@ CREATE TABLE IF NOT EXISTS user_badges (
 CREATE INDEX IF NOT EXISTS idx_user_badges_user_id ON user_badges(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_badges_badge_id ON user_badges(badge_id);
 
--- Default badge: "I AM THE CEO" with diamond icon
-INSERT INTO badges (id, title, icon, description)
-VALUES ('badge-ceo', 'I AM THE CEO', 'diamond', 'Chief Executive Officer / Founder Badge')
-ON CONFLICT (id) DO NOTHING;
-
--- Award default badge to seeded CEO account
-INSERT INTO user_badges (user_id, badge_id)
-VALUES ('usr-ahnaf-ceo', 'badge-ceo')
-ON CONFLICT (user_id, badge_id) DO NOTHING;

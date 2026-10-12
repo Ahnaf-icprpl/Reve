@@ -130,8 +130,17 @@ Reve/
 │   ├── 005_tokens_and_ledger.sql # Token wallets & audit ledger
 │   ├── 006_orders.sql       # Orders & line items schema
 │   ├── 007_badges.sql       # User badges schema
-│   ├── 008_seed_and_cart.sql # Seed data, platform metrics & cart schema
+│   ├── 008_cart_and_metrics.sql # Shopping cart items & platform metrics schema
 │   └── README.md            # Migrations guide
+├── migrations_devseed/      # Development seed migrations (001-008)
+│   ├── 001_users.sql        # Seed founder user
+│   ├── 002_badges.sql       # Seed badges & user assignment
+│   ├── 003_platform_metrics.sql # Seed platform metrics
+│   ├── 004_products.sql     # Seed products catalog
+│   ├── 005_wallets.sql      # Seed wallets & transactions
+│   ├── 006_trade_ins.sql    # Seed trade-in submissions
+│   ├── 007_donations.sql    # Seed textile donations
+│   └── 008_orders.sql       # Seed orders & items
 ├── scripts/
 │   └── migrate.js           # Idempotent migration runner script
 ├── routes/

@@ -1,0 +1,169 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <!-- Catalog Banner -->
+  <section style="padding: 2.5rem 0 1.5rem; background-color: var(--bg-white); border-bottom: 1px solid var(--border-light);">
+    <div class="container">
+      <span class="section-label">Marketplace</span>
+      <h1 class="editorial-heading" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+        Circular Clothing & Textiles
+      </h1>
+      <p style="color: var(--text-secondary); max-width: 650px; font-size: 0.95rem;">
+        Discover pre-loved and verified circular garments. Every listing can be purchased with Clothing Tokens (CT) at a guaranteed 1:1 local currency peg.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Catalog Layout with Sidebar Filter -->
+  <section class="container catalog-layout">
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar">
+      <!-- Search form -->
+      <form action="/marketplace" method="GET" class="filter-group">
+        <h3 class="filter-title">Search</h3>
+        <div class="search-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" name="q" placeholder="Brand, garment..." value="<%= searchQuery %>">
+        </div>
+        <% if (selectedCategory !== 'All') { %>
+          <input type="hidden" name="category" value="<%= selectedCategory %>">
+        <% } %>
+        <% if (selectedCondition !== 'All') { %>
+          <input type="hidden" name="condition" value="<%= selectedCondition %>">
+        <% } %>
+      </form>
+
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title">Categories</h3>
+        <ul class="filter-list">
+          <% categories.forEach(cat => { %>
+            <li>
+              <a href="/marketplace?category=<%= cat %><%= selectedCondition !== 'All' ? '&condition=' + selectedCondition : '' %><%= searchQuery ? '&q=' + searchQuery : '' %>" 
+                 class="filter-link <%= selectedCategory === cat ? 'active' : '' %>">
+                <span><%= cat %></span>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <!-- Condition Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title">Condition</h3>
+        <ul class="filter-list">
+          <% conditions.forEach(cond => { %>
+            <li>
+              <a href="/marketplace?condition=<%= cond %><%= selectedCategory !== 'All' ? '&category=' + selectedCategory : '' %><%= searchQuery ? '&q=' + searchQuery : '' %>" 
+                 class="filter-link <%= selectedCondition === cond ? 'active' : '' %>">
+                <span><%= cond %></span>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+
+      <!-- Wallet Power Reminder -->
+      <div class="card-white" style="padding: 1.25rem;">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--token-green); text-transform: uppercase;">Your Wallet</span>
+        <div style="font-size: 1.4rem; font-weight: 700; margin: 0.25rem 0;">
+          <%= wallet.balance %> CT
+        </div>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;">
+          Redeemable 1:1 on any item here without deduction.
+        </p>
+        <a href="/wallet" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); margin-top: 0.5rem; display: inline-block;">
+          Manage Wallet &rarr;
+        </a>
+      </div>
+    </aside>
+
+    <!-- Product Grid Area -->
+    <div class="catalog-main">
+      <!-- Toolbar -->
+      <div class="catalog-toolbar">
+        <span style="font-size: 0.88rem; color: var(--text-secondary);">
+          Showing <strong><%= products.length %></strong> circular garments
+        </span>
+
+        <form action="/marketplace" method="GET" style="display: flex; align-items: center; gap: 0.5rem;">
+          <% if (selectedCategory !== 'All') { %><input type="hidden" name="category" value="<%= selectedCategory %>"><% } %>
+          <% if (selectedCondition !== 'All') { %><input type="hidden" name="condition" value="<%= selectedCondition %>"><% } %>
+          <% if (searchQuery) { %><input type="hidden" name="q" value="<%= searchQuery %>"><% } %>
+          <label for="sortSelect" style="font-size: 0.82rem; color: var(--text-muted);">Sort by:</label>
+          <select name="sort" id="sortSelect" class="sort-select" onchange="this.form.submit()">
+            <option value="featured" <%= selectedSort === 'featured' ? 'selected' : '' %>>Featured</option>
+            <option value="price-asc" <%= selectedSort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="price-desc" <%= selectedSort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+            <option value="eco" <%= selectedSort === 'eco' ? 'selected' : '' %>>Highest Water Saved</option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Products Grid -->
+      <% if (products.length === 0) { %>
+        <div style="text-align: center; padding: 4rem 1rem; border: 1px dashed var(--border-light); border-radius: var(--radius-md);">
+          <h3 style="margin-bottom: 0.5rem;">No circular garments found</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+            Try clearing filters or search criteria.
+          </p>
+          <a href="/marketplace" class="btn btn-secondary">Clear All Filters</a>
+        </div>
+      <% } else { %>
+        <div class="products-grid">
+          <% products.forEach(product => { %>
+            <div class="product-card">
+              <div class="product-img-wrap">
+                <a href="/marketplace/<%= product.id %>">
+                  <img src="<%= product.image %>" alt="<%= product.title %>" class="product-img" loading="lazy">
+                </a>
+                <div class="product-badges">
+                  <span class="badge badge-condition"><%= product.condition %></span>
+                  <span class="badge badge-token"><%= product.tokens %> CT Peg</span>
+                </div>
+                <div class="product-eco-tag">
+                  💧 <%= product.ecoSavings.waterLiters.toLocaleString() %>L Saved
+                </div>
+              </div>
+
+              <div class="product-info">
+                <span class="product-brand"><%= product.brand %></span>
+                <a href="/marketplace/<%= product.id %>" class="product-title">
+                  <%= product.title %>
+                </a>
+                <div class="product-meta-row">
+                  <span>Size: <%= product.size %></span>
+                  <span><%= product.color %></span>
+                </div>
+
+                <div class="product-price-row">
+                  <div>
+                    <span class="fiat-price">$<%= product.price %></span>
+                    <span class="token-peg-tag">USD</span>
+                  </div>
+                  <div class="token-price">
+                    <span><%= product.tokens %> CT</span>
+                  </div>
+                </div>
+
+                <form action="/cart/add" method="POST" style="margin-top: 1rem;">
+                  <input type="hidden" name="productId" value="<%= product.id %>">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="btn btn-secondary btn-block btn-sm">
+                    Add to Bag
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

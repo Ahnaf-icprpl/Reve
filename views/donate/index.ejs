@@ -1,0 +1,141 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <!-- Donation Header -->
+  <section style="padding: 3rem 0 1.5rem; background-color: var(--bg-white); border-bottom: 1px solid var(--border-light);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-label">Zero-Landfill Circular Initiative</span>
+          <h1 class="editorial-heading" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+            Donate Textiles & Unwearable Garments
+          </h1>
+          <p style="color: var(--text-secondary); max-width: 680px; font-size: 0.95rem;">
+            Give your unwanted clothes a meaningful second life without monetary payout. We route every piece to community shelter drives, repair workshops, or fiber shredding facilities.
+          </p>
+        </div>
+        <div>
+          <a href="/donate/track" class="btn btn-secondary">
+            View Donation Impact &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Donation Form & Stream Explanation Layout -->
+  <section class="container" style="padding: 3.5rem 0 5rem;">
+    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3.5rem;">
+      <!-- Donation Intake Form -->
+      <div>
+        <form action="/donate" method="POST" class="card-white" style="padding: 2rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+            Donation Submission Details
+          </h2>
+
+          <div class="form-group">
+            <label class="form-label" for="donTitle">Package Label / Description</label>
+            <input type="text" id="donTitle" name="title" class="form-input" placeholder="e.g. Box of everyday winter cotton tees & worn jeans" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="itemCount">Estimated Number of Garments</label>
+              <input type="number" id="itemCount" name="itemCount" class="form-input" min="1" max="100" value="6" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="intendedProgram">Intended Circular Destination</label>
+              <select id="intendedProgram" name="intendedProgram" class="form-select" required>
+                <option value="Community Shelter & Direct Reuse">Community Shelter & Direct Reuse (Wearable items)</option>
+                <option value="Circular Repair & Upcycling Studio">Circular Repair & Upcycling Studio (Minor wear)</option>
+                <option value="Fiber Shredding & Acoustic Insulation" selected>Fiber Shredding & Recycling (Torn/unwearable)</option>
+                <option value="Let Revé Assess Best Ecological Route">Let Revé Sort & Assess Best Route (Recommended)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Garment Categories Included</label>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.85rem; padding-top: 0.25rem;">
+              <label style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="checkbox" name="categories" value="Tops & Shirts" checked> Tops & Shirts
+              </label>
+              <label style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="checkbox" name="categories" value="Bottoms & Denim" checked> Bottoms & Denim
+              </label>
+              <label style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="checkbox" name="categories" value="Outerwear"> Outerwear
+              </label>
+              <label style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="checkbox" name="categories" value="Household Textiles & Scraps"> Textile Scraps & Linens
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="dropOffMethod">How will you hand over the items?</label>
+            <select id="dropOffMethod" name="dropOffMethod" class="form-select" required>
+              <option value="Prepaid Eco-Shipping Label">Prepaid Eco-Shipping Label (Box it and mail via USPS/UPS)</option>
+              <option value="Drop-off at Local Revé Circular Partner Hub">Drop-off at Local Revé Circular Partner Hub (Show QR Pass)</option>
+              <option value="Neighborhood Textile Collection Bin">Neighborhood Revé Circular Collection Bin</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="conditionSummary">Textile Condition Overview</label>
+            <textarea id="conditionSummary" name="conditionSummary" rows="3" class="form-textarea" placeholder="Note if items are freshly washed, stained, or frayed. All textiles are accepted as long as dry and mold-free."></textarea>
+          </div>
+
+          <div style="background-color: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.5rem; font-size: 0.8rem; color: var(--text-secondary);">
+            <strong>Notice per specification:</strong> Pure donations do not generate token payouts. If you wish to receive token value for eligible clothing, please use the <a href="/trade-in" style="color: var(--token-green-dark); text-decoration: underline; font-weight: 600;">Trade-in Program</a> instead.
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" style="padding: 1.1rem; font-size: 1rem;">
+            Generate Free Donation Pass & Label &rarr;
+          </button>
+        </form>
+      </div>
+
+      <!-- Circular Stream Explanation Sidebar -->
+      <aside>
+        <div class="card-white" style="position: sticky; top: 6rem;">
+          <span class="section-label">Where Your Clothes Go</span>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem;">
+            The 3 Circular Pathways
+          </h3>
+
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="border-left: 2px solid var(--token-green); padding-left: 1rem;">
+              <strong style="font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">1. Shelter Direct Wear</strong>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                Clean, functional clothing in good condition is ozone sanitized and donated directly to vetted regional shelters and community clothing closets.
+              </p>
+            </div>
+
+            <div style="border-left: 2px solid #3b82f6; padding-left: 1rem;">
+              <strong style="font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">2. Upcycling & Repair</strong>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                Garments with missing buttons, torn seams, or localized wear are patched and reworked into one-of-a-kind upcycled capsule collections.
+              </p>
+            </div>
+
+            <div style="border-left: 2px solid #8b5cf6; padding-left: 1rem;">
+              <strong style="font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">3. Fiber-Level Shredding</strong>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+                Heavily stained or unwearable scraps are mechanically deconstructed into raw cotton and wool fibers used for building insulation and carpet underlay.
+              </p>
+            </div>
+          </div>
+
+          <div style="margin-top: 2rem; padding: 1rem; background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--token-green-dark);">
+            🌱 <strong>100% Zero-Landfill Pledge:</strong> Not a single scrap from Revé intake ends up in municipal landfills or export burn dumps.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

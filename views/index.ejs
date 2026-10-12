@@ -1,0 +1,188 @@
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
+
+<main class="main-content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-text-col">
+        <div class="hero-badge-row">
+          <span class="badge badge-token">✦ Circular Token Economy</span>
+          <span class="badge badge-condition">Zero-Landfill Mission</span>
+        </div>
+        <h1 class="hero-title">
+          The circular marketplace for conscious fashion.
+        </h1>
+        <p class="hero-subtitle">
+          Discover verified circular clothing, trade in items from your wardrobe for digital tokens, or donate textiles for regenerative recycling. Every transaction keeps textiles in motion.
+        </p>
+        <div class="hero-actions">
+          <a href="/marketplace" class="btn btn-primary">
+            Explore Marketplace &rarr;
+          </a>
+          <a href="/trade-in" class="btn btn-secondary">
+            Trade In Wardrobe
+          </a>
+          <a href="/donate" class="btn btn-secondary">
+            Donate Textiles
+          </a>
+        </div>
+        <div class="hero-trust-bar">
+          <div class="trust-item">
+            <span class="trust-val"><%= stats.garmentsRecirculated %></span>
+            <span class="trust-label">Garments Recirculated</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-val"><%= stats.waterSavedLiters %>L</span>
+            <span class="trust-label">Clean Water Preserved</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-val"><%= stats.tokensEarnedByCommunity %> CT</span>
+            <span class="trust-label">Community Tokens Issued</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual: Dual-value Token Economy Demonstration Card -->
+      <div class="hero-visual">
+        <div class="dual-token-card">
+          <div class="dual-token-header">
+            <span class="dual-token-title">How Revé Tokens Work</span>
+            <span class="badge badge-token">1:1 Value Peg</span>
+          </div>
+          <div class="dual-token-comparison">
+            <div class="comparison-box highlight">
+              <span class="comparison-tag">Spend Inside Revé</span>
+              <span class="comparison-val">1 CT = $1.00</span>
+              <p class="comparison-desc">
+                Full 100% value retention when redeemed for curated circular clothing.
+              </p>
+            </div>
+            <div class="comparison-box">
+              <span class="comparison-tag">Convert to Cash</span>
+              <span class="comparison-val">1 CT = $0.80</span>
+              <p class="comparison-desc">
+                Cashing out incurs a 20% conversion deduction to keep value in the circular loop.
+              </p>
+            </div>
+          </div>
+          <div class="dual-token-footer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Your current wallet: <strong><%= wallet.balance %> CT</strong> ($<%= wallet.balance %>.00 in clothing)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Pillars Section -->
+  <section class="pillars-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Three Ways to Participate</span>
+        <h2 class="section-title">A complete circular clothing loop.</h2>
+        <p class="section-desc">
+          Revé combines an Amazon-style fashion marketplace with a textile reuse and recycling system.
+        </p>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <span class="pillar-num">01</span>
+          <h3 class="pillar-title">Buy Circular Clothing</h3>
+          <p class="pillar-body">
+            Browse verified garments across outerwear, denim, knitwear, and vintage pieces. Pay seamlessly with your earned tokens at a 1:1 currency peg or standard checkout.
+          </p>
+          <a href="/marketplace" class="pillar-link">Shop Marketplace &rarr;</a>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-num">02</span>
+          <h3 class="pillar-title">Trade In for Tokens</h3>
+          <p class="pillar-body">
+            Submit quality items you no longer wear. Receive an assessed token valuation and credit your account immediately. Keep the value circulating within the circular economy.
+          </p>
+          <a href="/trade-in" class="pillar-link">Start a Trade-In &rarr;</a>
+        </div>
+
+        <div class="pillar-card">
+          <span class="pillar-num">03</span>
+          <h3 class="pillar-title">Donate & Recycle</h3>
+          <p class="pillar-body">
+            Give worn or unwearable textiles a second life. Our circular hubs direct items to repair partners, community shelters, or fiber-level shredding for insulation.
+          </p>
+          <a href="/donate" class="pillar-link">Donate Textiles &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Marketplace Items -->
+  <section class="catalog-section" style="padding: 4.5rem 0; background-color: var(--bg-white); border-bottom: 1px solid var(--border-light);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-label">Curated Inventory</span>
+          <h2 class="section-title" style="margin-bottom: 0;">Featured Circular Arrivals</h2>
+        </div>
+        <a href="/marketplace" class="btn btn-secondary">
+          View All Listings &rarr;
+        </a>
+      </div>
+
+      <div class="products-grid">
+        <% featuredProducts.forEach(product => { %>
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <a href="/marketplace/<%= product.id %>">
+                <img src="<%= product.image %>" alt="<%= product.title %>" class="product-img" loading="lazy">
+              </a>
+              <div class="product-badges">
+                <span class="badge badge-condition"><%= product.condition %></span>
+                <span class="badge badge-token"><%= product.tokens %> CT Peg</span>
+              </div>
+              <div class="product-eco-tag">
+                💧 <%= product.ecoSavings.waterLiters.toLocaleString() %>L Saved
+              </div>
+            </div>
+
+            <div class="product-info">
+              <span class="product-brand"><%= product.brand %></span>
+              <a href="/marketplace/<%= product.id %>" class="product-title">
+                <%= product.title %>
+              </a>
+              <div class="product-meta-row">
+                <span>Size: <%= product.size %></span>
+                <span><%= product.color %></span>
+              </div>
+
+              <div class="product-price-row">
+                <div>
+                  <span class="fiat-price">$<%= product.price %></span>
+                  <span class="token-peg-tag">USD</span>
+                </div>
+                <div class="token-price">
+                  <span><%= product.tokens %> CT</span>
+                </div>
+              </div>
+
+              <form action="/cart/add" method="POST" style="margin-top: 1rem;">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-secondary btn-block btn-sm">
+                  Add to Bag
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('./partials/footer') %>

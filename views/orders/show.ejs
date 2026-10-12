@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem;">
+    <div class="container">
+      <span class="section-label">Order Confirmation</span>
+      <h1 class="editorial-heading" style="font-size: 2.25rem;">Receipt #<%= order.id %></h1>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">
+        Thank you for keeping circular fashion in motion.
+      </p>
+    </div>
+  </div>
+
+  <section class="container" style="padding: 3rem 0 5rem; max-width: 860px;">
+    <!-- Confirmation Banner -->
+    <div class="card-white" style="border-color: var(--token-border); background-color: var(--token-green-light); padding: 1.5rem; margin-bottom: 2rem;">
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--token-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+          ✓
+        </div>
+        <div>
+          <h3 style="color: var(--token-green-dark); font-size: 1.15rem; margin-bottom: 0.25rem;">
+            Order Placed Successfully
+          </h3>
+          <p style="color: var(--token-green-dark); font-size: 0.85rem; margin: 0;">
+            A confirmation has been recorded in your circular profile. Reference: <strong>#<%= order.id %></strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items Table -->
+    <div class="card-white" style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem;">
+        Items in this Order
+      </h3>
+
+      <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <% order.items.forEach(item => { %>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle);">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <img src="<%= item.image %>" alt="<%= item.title %>" style="width: 70px; height: 85px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);"><%= item.brand %></span>
+                <div style="font-weight: 600; font-size: 1rem;"><%= item.title %></div>
+                <div style="font-size: 0.82rem; color: var(--text-secondary);">Quantity: <%= item.quantity %></div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700; font-size: 1.1rem;">$<%= item.price * item.quantity %></div>
+              <div style="color: var(--token-green-dark); font-size: 0.82rem; font-weight: 600;"><%= item.tokens * item.quantity %> CT</div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Payment Breakdown -->
+      <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div class="calc-row">
+          <span class="calc-label">Subtotal</span>
+          <span class="calc-val">$<%= order.subtotal.toFixed(2) %></span>
+        </div>
+        <% if (order.paidWithTokens > 0) { %>
+          <div class="calc-row">
+            <span class="calc-label">Paid with Revé Tokens (1:1 Peg)</span>
+            <span class="calc-val" style="color: var(--token-green-dark); font-weight: 700;">-<%= order.paidWithTokens %> CT (-$<%= order.paidWithTokens.toFixed(2) %>)</span>
+          </div>
+        <% } %>
+        <% if (order.paidWithCash > 0) { %>
+          <div class="calc-row">
+            <span class="calc-label">Paid with Card</span>
+            <span class="calc-val">$<%= order.paidWithCash.toFixed(2) %></span>
+          </div>
+        <% } %>
+        <div class="calc-row">
+          <span class="calc-label">Shipping (Carbon-Neutral)</span>
+          <span class="calc-val" style="color: var(--token-green-dark);">FREE</span>
+        </div>
+        <div class="calc-row total-row" style="border-top: 1px solid var(--border-light); margin-top: 0.5rem; padding-top: 0.75rem;">
+          <span>Net Charged</span>
+          <span>$<%= order.totalFiat.toFixed(2) %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery & Eco Information Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+      <div class="card-white">
+        <h4 style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.75rem;">
+          Delivery Address
+        </h4>
+        <div style="font-size: 0.9rem; line-height: 1.5;">
+          <strong><%= order.shippingAddress.fullName %></strong><br>
+          <%= order.shippingAddress.street %><br>
+          <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.postalCode %>
+        </div>
+      </div>
+
+      <div class="card-white" style="border-color: var(--token-border);">
+        <h4 style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--token-green-dark); margin-bottom: 0.75rem;">
+          🌿 Environmental Footprint Saved
+        </h4>
+        <div style="font-size: 0.9rem; line-height: 1.5;">
+          <strong><%= (order.ecoMetrics?.waterSaved || 0).toLocaleString() %> Liters</strong> of clean water preserved.<br>
+          <strong><%= order.ecoMetrics?.co2Avoided || 0 %> kg</strong> of carbon emissions prevented.<br>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 0.25rem;">
+            Calculated against conventional new garment production.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <a href="/marketplace" class="btn btn-primary">Return to Marketplace</a>
+      <a href="/wallet" class="btn btn-secondary">Check Token Wallet</a>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

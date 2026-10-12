@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem;">
+    <div class="container">
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        <a href="/trade-in/track">&larr; Back to Submissions</a>
+      </div>
+      <span class="section-label">Trade-In Assessment</span>
+      <h1 class="editorial-heading" style="font-size: 2.25rem;"><%= item.title %></h1>
+    </div>
+  </div>
+
+  <section class="container" style="padding: 3rem 0 5rem; max-width: 900px;">
+    <div class="card-white" style="padding: 2rem;">
+      <div style="display: grid; grid-template-columns: 240px 1fr; gap: 2rem; align-items: start; margin-bottom: 2rem;">
+        <img src="<%= item.photoUrl %>" alt="<%= item.title %>" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border-light); object-fit: cover; aspect-ratio: 1;">
+        
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span class="badge badge-token">Reference #<%= item.id %></span>
+            <span class="badge <%= item.status === 'Offer Ready' ? 'badge-status-ready' : 'badge-status-credited' %>"><%= item.status %></span>
+          </div>
+
+          <div style="font-size: 1.75rem; font-weight: 700; color: var(--token-green-dark); margin-bottom: 0.5rem;">
+            <%= item.assessedValueTokens %> CT ($<%= item.assessedValueTokens %>.00 Value)
+          </div>
+
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+            <%= item.statusMessage %>
+          </p>
+
+          <div class="spec-list" style="margin-bottom: 1rem;">
+            <div class="spec-item">
+              <span class="spec-key">Brand</span>
+              <span class="spec-val"><%= item.brand %></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-key">Category</span>
+              <span class="spec-val"><%= item.category %></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-key">Size</span>
+              <span class="spec-val"><%= item.size %></span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-key">Condition</span>
+              <span class="spec-val"><%= item.condition %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% if (item.status === 'Offer Ready') { %>
+        <div style="background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <div>
+            <div style="font-weight: 700; color: var(--token-green-dark); font-size: 1rem;">Ready to accept this valuation?</div>
+            <div style="font-size: 0.82rem; color: var(--token-green-dark);">Agreed tokens are instantly credited to your wallet balance.</div>
+          </div>
+          <form action="/trade-in/<%= item.id %>/accept" method="POST">
+            <button type="submit" class="btn btn-token">Accept Offer & Credit Wallet</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

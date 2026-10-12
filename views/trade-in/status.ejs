@@ -1,0 +1,135 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-label">Submissions Ledger</span>
+          <h1 class="editorial-heading" style="font-size: 2.25rem;">Trade-in Tracking & Offers</h1>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            Review assessment valuations, accept token offers, and monitor item intake.
+          </p>
+        </div>
+        <a href="/trade-in" class="btn btn-primary">
+          + New Trade-in Submission
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section class="container" style="padding: 3rem 0 5rem;">
+    <% if (tradeIns.length === 0) { %>
+      <div style="text-align: center; padding: 4rem 1rem; border: 1px dashed var(--border-light); border-radius: var(--radius-md);">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No trade-ins submitted yet</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem;">
+          Give your wardrobe a second life and earn digital Clothing Tokens.
+        </p>
+        <a href="/trade-in" class="btn btn-primary">Start First Trade-in</a>
+      </div>
+    <% } else { %>
+      <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+        <% tradeIns.forEach(item => { %>
+          <div class="card-white" style="padding: 1.75rem; border-color: <%= item.status === 'Offer Ready' ? 'var(--token-green)' : 'var(--border-light)' %>;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em;">
+                  Reference #<%= item.id %>
+                </span>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0.2rem 0;">
+                  <%= item.title %>
+                </h3>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  Submitted on <%= new Date(item.submissionDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %> &bull; Brand: <strong><%= item.brand %></strong>
+                </div>
+              </div>
+
+              <!-- Status Badge -->
+              <div>
+                <% if (item.status === 'Offer Ready') { %>
+                  <span class="badge badge-status-ready" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
+                    ✦ Offer Ready for Acceptance
+                  </span>
+                <% } else if (item.status === 'Credited') { %>
+                  <span class="badge badge-status-credited" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
+                    ✓ <%= item.assessedValueTokens %> CT Credited to Wallet
+                  </span>
+                <% } else { %>
+                  <span class="badge badge-condition" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
+                    ● <%= item.status %>
+                  </span>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Item Details & Valuation Preview Row -->
+            <div style="display: grid; grid-template-columns: 100px 1fr auto; gap: 1.5rem; align-items: center; margin-bottom: 1.25rem;">
+              <img src="<%= item.photoUrl %>" alt="<%= item.title %>" style="width: 100px; height: 110px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
+
+              <div style="font-size: 0.88rem; line-height: 1.6;">
+                <div><strong>Category:</strong> <%= item.category %> &bull; <strong>Size:</strong> <%= item.size %> &bull; <strong>Condition:</strong> <%= item.condition %></div>
+                <% if (item.material) { %>
+                  <div style="color: var(--text-secondary);"><strong>Materials:</strong> <%= item.material %></div>
+                <% } %>
+                <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem;">
+                  <em>Notes: <%= item.notes %></em>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-secondary);">
+                  <strong>Circular Outcome:</strong> <%= item.circularOutcome %>
+                </div>
+              </div>
+
+              <!-- Valuation Pill -->
+              <div style="text-align: right; min-width: 160px; padding: 1rem; background-color: var(--bg-white); border: 1px solid var(--border-light); border-radius: var(--radius-sm);">
+                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block;">
+                  Assessed Valuation
+                </span>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--token-green-dark); line-height: 1.1; margin: 0.25rem 0;">
+                  <%= item.assessedValueTokens %> CT
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                  $<%= item.assessedValueTokens %>.00 1:1 Value Peg
+                </div>
+              </div>
+            </div>
+
+            <!-- Action buttons for Offer Ready items -->
+            <% if (item.status === 'Offer Ready') { %>
+              <div style="background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <strong style="color: var(--token-green-dark); font-size: 0.95rem; display: block;">
+                    Valuation Offer of <%= item.assessedValueTokens %> CT ($<%= item.assessedValueTokens %>.00 Value)
+                  </strong>
+                  <span style="font-size: 0.82rem; color: var(--token-green-dark);">
+                    Accept to credit tokens immediately to your digital wallet balance.
+                  </span>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem;">
+                  <form action="/trade-in/<%= item.id %>/accept" method="POST">
+                    <button type="submit" class="btn btn-token" style="padding: 0.65rem 1.25rem; font-weight: 700;">
+                      ✓ Accept Offer & Credit Wallet
+                    </button>
+                  </form>
+                  <form action="/trade-in/<%= item.id %>/decline" method="POST">
+                    <button type="submit" class="btn btn-secondary btn-sm" style="color: #6b7280;">
+                      Decline
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% } else if (item.status === 'Credited') { %>
+              <div style="font-size: 0.85rem; color: var(--token-green-dark); padding: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                <span>✓ <%= item.statusMessage %></span>
+                <a href="/wallet" style="font-weight: 700; text-decoration: underline;">View in Wallet &rarr;</a>
+              </div>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

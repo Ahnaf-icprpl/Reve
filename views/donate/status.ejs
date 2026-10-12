@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-label">Impact Tracking</span>
+          <h1 class="editorial-heading" style="font-size: 2.25rem;">Donation History & Circular Footprint</h1>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            Verifiable records of textiles diverted from landfills through your contributions.
+          </p>
+        </div>
+        <a href="/donate" class="btn btn-primary">
+          + Make a New Donation
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <section class="container" style="padding: 3rem 0 5rem;">
+    <!-- Cumulative Impact Bar -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem;">
+      <div class="card-white" style="border-color: var(--token-green);">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--token-green); letter-spacing: 0.08em;">
+          Textiles Diverted
+        </span>
+        <div style="font-size: 2.25rem; font-weight: 800; color: var(--token-green-dark); margin: 0.35rem 0;">
+          <%= totalKg %> kg
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-secondary);">
+          Fabric prevented from municipal landfill waste
+        </span>
+      </div>
+
+      <div class="card-white">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em;">
+          Water Conserved
+        </span>
+        <div style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary); margin: 0.35rem 0;">
+          <%= totalWater.toLocaleString() %> L
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-secondary);">
+          Equivalent clean water saved through fiber reuse
+        </span>
+      </div>
+
+      <div class="card-white">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em;">
+          Total Garments Donated
+        </span>
+        <div style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary); margin: 0.35rem 0;">
+          <%= totalItems %> Pieces
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-secondary);">
+          100% diverted across <%= donations.length %> shipments
+        </span>
+      </div>
+    </div>
+
+    <!-- Donations List -->
+    <% if (donations.length === 0) { %>
+      <div style="text-align: center; padding: 4rem 1rem; border: 1px dashed var(--border-light); border-radius: var(--radius-md);">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No donations registered yet</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem;">
+          Support zero-landfill circular textile recovery.
+        </p>
+        <a href="/donate" class="btn btn-primary">Start a Donation</a>
+      </div>
+    <% } else { %>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <% donations.forEach(item => { %>
+          <div class="card-white" style="padding: 1.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em;">
+                  Pass ID #<%= item.id %> &bull; <%= item.trackingNumber %>
+                </span>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0.2rem 0;">
+                  <%= item.title %>
+                </h3>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  Registered on <%= new Date(item.submissionDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %> &bull; <%= item.itemCount %> Items
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <span class="badge badge-status-credited">
+                  ● <%= item.status %>
+                </span>
+                <a href="/donate/<%= item.id %>" class="btn btn-secondary btn-sm">
+                  View Drop-Off Pass &rarr;
+                </a>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; font-size: 0.85rem; line-height: 1.6;">
+              <div>
+                <div><strong>Program Designated:</strong> <%= item.intendedProgram %></div>
+                <div><strong>Handover Method:</strong> <%= item.dropOffMethod %></div>
+                <div style="color: var(--text-muted); margin-top: 0.5rem;">
+                  <em>Notes: <%= item.beneficiaryNotes %></em>
+                </div>
+              </div>
+
+              <div style="background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); padding: 1rem; color: var(--token-green-dark);">
+                <strong>Impact Achieved:</strong><br>
+                &bull; <%= item.impactMetrics?.textilesDivertedKg %> kg textile recovered<br>
+                &bull; <%= (item.impactMetrics?.waterSavedLiters || 0).toLocaleString() %> L water conserved<br>
+                &bull; 100% zero-landfill diversion
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,92 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 2.5rem 0 1.25rem;">
+    <div class="container">
+      <span class="section-label">Account Activity</span>
+      <h1 class="editorial-heading" style="font-size: 2.25rem;">Order History</h1>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">
+        Track your circular fashion acquisitions and token redemptions.
+      </p>
+    </div>
+  </div>
+
+  <section class="container" style="padding: 3rem 0 5rem;">
+    <% if (orders.length === 0) { %>
+      <div style="text-align: center; padding: 4rem 1rem; border: 1px dashed var(--border-light); border-radius: var(--radius-md);">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No orders placed yet</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem;">
+          Browse the marketplace and spend your tokens on verified pre-loved clothing.
+        </p>
+        <a href="/marketplace" class="btn btn-primary">Browse Marketplace</a>
+      </div>
+    <% } else { %>
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <% orders.forEach(order => { %>
+          <div class="card-white" style="padding: 1.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+              <div>
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em;">
+                  Order Number
+                </span>
+                <div style="font-size: 1.25rem; font-weight: 700;">#<%= order.id %></div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                  Placed on <%= new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 1rem; align-items: center;">
+                <span class="badge <%= order.status === 'Delivered' ? 'badge-status-credited' : 'badge-status-ready' %>">
+                  ● <%= order.status %>
+                </span>
+                <a href="/orders/<%= order.id %>" class="btn btn-secondary btn-sm">
+                  View Receipt &rarr;
+                </a>
+              </div>
+            </div>
+
+            <!-- Items preview -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+              <% order.items.forEach(item => { %>
+                <div style="display: flex; gap: 1rem; align-items: center; background-color: var(--bg-white); border: 1px solid var(--border-light); padding: 0.75rem; border-radius: var(--radius-sm);">
+                  <img src="<%= item.image %>" alt="<%= item.title %>" style="width: 50px; height: 60px; object-fit: cover; border-radius: var(--radius-sm);">
+                  <div style="font-size: 0.85rem; flex: 1;">
+                    <div style="font-weight: 600; line-height: 1.2;"><%= item.title %></div>
+                    <div style="color: var(--text-muted); font-size: 0.78rem;"><%= item.brand %> &bull; Qty: <%= item.quantity %></div>
+                  </div>
+                  <div style="text-align: right; font-size: 0.85rem;">
+                    <div>$<%= item.price %></div>
+                    <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= item.tokens %> CT</div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <!-- Payment Breakdown Footer -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle);">
+              <div>
+                <span style="color: var(--text-muted);">Payment Method:</span>
+                <strong><%= order.paymentMethod %></strong>
+                <% if (order.paidWithTokens > 0) { %>
+                  <span class="badge badge-token" style="margin-left: 0.5rem;"><%= order.paidWithTokens %> CT Redeemed</span>
+                <% } %>
+              </div>
+
+              <div style="display: flex; gap: 1.5rem; align-items: center;">
+                <span style="color: var(--token-green-dark); font-size: 0.8rem;">
+                  💧 <%= (order.ecoMetrics?.waterSaved || 0).toLocaleString() %>L Water Conserved
+                </span>
+                <span style="font-size: 1.1rem; font-weight: 700;">
+                  Total: $<%= order.totalFiat.toFixed(2) %>
+                </span>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

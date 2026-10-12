@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime and cache
+pids/
+*.pid
+*.seed
+*.pid.lock
+.cache/
+
+# User uploads (keep directory tracked via .gitkeep)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Coverage and testing
+coverage/
+*.lcov
+.nyc_output/
+
+# Build outputs
+dist/
+build/
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDEs and editor configurations
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~

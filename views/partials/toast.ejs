@@ -1,0 +1,17 @@
+<% if (typeof toast !== 'undefined' && toast) { %>
+  <div class="toast-banner toast-<%= toast.type %>" id="flashToast" role="alert">
+    <div class="toast-content container">
+      <div class="toast-indicator">
+        <% if (toast.type === 'success') { %>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <% } else if (toast.type === 'error') { %>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <% } else { %>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <% } %>
+      </div>
+      <span class="toast-message"><%= toast.message %></span>
+      <button class="toast-close" onclick="document.getElementById('flashToast').remove()" aria-label="Close message">&times;</button>
+    </div>
+  </div>
+<% } %>

@@ -1,0 +1,154 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<main class="main-content">
+  <!-- Breadcrumb -->
+  <div style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-light); padding: 0.85rem 0;">
+    <div class="container" style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: center;">
+      <a href="/marketplace">Marketplace</a>
+      <span>/</span>
+      <a href="/marketplace?category=<%= product.category %>"><%= product.category %></a>
+      <span>/</span>
+      <span style="color: var(--text-primary);"><%= product.title %></span>
+    </div>
+  </div>
+
+  <section class="container product-detail-layout">
+    <!-- Gallery -->
+    <div class="product-gallery">
+      <img src="<%= product.image %>" alt="<%= product.title %>" class="main-detail-img">
+    </div>
+
+    <!-- Product Details -->
+    <div class="product-detail-info">
+      <span class="detail-brand"><%= product.brand %></span>
+      <h1 class="detail-title"><%= product.title %></h1>
+
+      <div class="detail-price-box">
+        <div>
+          <span class="detail-fiat">$<%= product.price %></span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.25rem;">USD</span>
+        </div>
+        <div class="detail-tokens">
+          <span class="detail-token-pill">✦ <%= product.tokens %> CT</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">(1:1 Value Peg)</span>
+        </div>
+      </div>
+
+      <!-- Eco Impact Savings -->
+      <div class="eco-impact-box">
+        <div class="eco-box-title">
+          <span>🌿 Circular Footprint Savings</span>
+        </div>
+        <div class="eco-metrics-row">
+          <div class="eco-metric">
+            <span class="eco-val"><%= product.ecoSavings.waterLiters.toLocaleString() %> Liters</span>
+            <span class="eco-desc">Freshwater conserved vs virgin manufacturing</span>
+          </div>
+          <div class="eco-metric">
+            <span class="eco-val"><%= product.ecoSavings.co2Kg %> kg</span>
+            <span class="eco-desc">CO2 greenhouse emissions prevented</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token purchasing power indicator -->
+      <div class="card-white" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--token-green);">
+            Token Redemption Available
+          </span>
+          <span style="font-size: 0.82rem; font-weight: 600;">
+            Balance: <%= wallet.balance %> CT
+          </span>
+        </div>
+        <% if (wallet.balance >= product.tokens) { %>
+          <p style="font-size: 0.85rem; color: var(--token-green-dark); margin: 0;">
+            ✓ You have enough tokens! You can purchase this garment entirely with <strong><%= product.tokens %> CT</strong> without spending cash.
+          </p>
+        <% } else { %>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+            You can use your <strong><%= wallet.balance %> CT</strong> to discount this order by $<%= wallet.balance %>.00 and pay the remaining $<%= product.price - wallet.balance %> via card.
+          </p>
+        <% } %>
+      </div>
+
+      <!-- Specs & Textile Breakdown -->
+      <div class="spec-list">
+        <div class="spec-item">
+          <span class="spec-key">Condition</span>
+          <span class="spec-val"><%= product.condition %> (<%= product.conditionScore %>)</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Size</span>
+          <span class="spec-val"><%= product.size %></span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Color</span>
+          <span class="spec-val"><%= product.color %></span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-key">Gender</span>
+          <span class="spec-val"><%= product.gender %></span>
+        </div>
+        <div class="spec-item" style="grid-column: span 2;">
+          <span class="spec-key">Textile Composition</span>
+          <span class="spec-val"><%= product.material %></span>
+        </div>
+      </div>
+
+      <!-- Condition Notes -->
+      <div style="margin-bottom: 2rem;">
+        <h4 style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; color: var(--text-muted);">
+          Quality & Sanitation Assessment
+        </h4>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+          <%= product.conditionNotes %>
+        </p>
+      </div>
+
+      <!-- Add to Cart / Actions -->
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <form action="/cart/add" method="POST" style="flex: 1;">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="btn btn-primary btn-block" style="padding: 1rem;">
+            Add to Bag — $<%= product.price %> / <%= product.tokens %> CT
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Similar Circular Items -->
+  <% if (similarItems && similarItems.length > 0) { %>
+    <section style="padding: 4rem 0; background-color: var(--bg-white); border-top: 1px solid var(--border-light);">
+      <div class="container">
+        <h3 class="editorial-heading" style="font-size: 1.75rem; margin-bottom: 2rem;">
+          Similar Circular Garments
+        </h3>
+        <div class="products-grid">
+          <% similarItems.forEach(item => { %>
+            <div class="product-card">
+              <div class="product-img-wrap">
+                <a href="/marketplace/<%= item.id %>">
+                  <img src="<%= item.image %>" alt="<%= item.title %>" class="product-img" loading="lazy">
+                </a>
+              </div>
+              <div class="product-info">
+                <span class="product-brand"><%= item.brand %></span>
+                <a href="/marketplace/<%= item.id %>" class="product-title"><%= item.title %></a>
+                <div class="product-price-row">
+                  <span class="fiat-price">$<%= item.price %></span>
+                  <span class="token-price"><%= item.tokens %> CT</span>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

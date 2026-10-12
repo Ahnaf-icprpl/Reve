@@ -1,15 +1,35 @@
 /**
  * Revé Cloudinary Media Service
  * Manages media uploads, URL resolution, and asset optimization via Cloudinary.
+ * ZERO hardcoded fallbacks: strictly requires environment variables.
  */
 
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 
+let cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+let apiKey = process.env.CLOUDINARY_API_KEY;
+let apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+if (process.env.CLOUDINARY_URL && (!cloudName || !apiKey || !apiSecret)) {
+  const match = process.env.CLOUDINARY_URL.match(/^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/);
+  if (match) {
+    apiKey = apiKey || match[1];
+    apiSecret = apiSecret || match[2];
+    cloudName = cloudName || match[3];
+  }
+}
+
+if (!cloudName || !apiKey || !apiSecret) {
+  throw new Error(
+    "Missing Cloudinary credentials. Set CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in environment variables. Zero hardcoded fallbacks allowed."
+  );
+}
+
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "arwppqjt",
-  api_key: process.env.CLOUDINARY_API_KEY || "277314149549576",
-  api_secret: process.env.CLOUDINARY_API_SECRET || "JqqL2_AK1ytoV22cj3f-GaaFc8o",
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
   secure: true
 });
 

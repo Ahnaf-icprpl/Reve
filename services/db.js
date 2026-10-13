@@ -423,14 +423,16 @@ async function spendTokens(userId, amount, title, referenceId) {
     if (walletRes.rows.length === 0) {
       throw new Error(`Wallet not found for user ${userId}`);
     }
-
+    const amt = normalizePrice(amount);
     const w = walletRes.rows[0];
-    if (w.token_balance < amount) {
-      throw new Error(`Insufficient tokens: ${w.token_balance} available, ${amount} required`);
+    const currentBalance = normalizePrice(w.token_balance);
+    const currentSpent = normalizePrice(w.total_spent_tokens);
+    if (currentBalance < amt) {
+      throw new Error(`Insufficient tokens: ${currentBalance.toLocaleString("id-ID")} available, ${amt.toLocaleString("id-ID")} required`);
     }
 
-    const newBalance = w.token_balance - amount;
-    const newTotalSpent = w.total_spent_tokens + amount;
+    const newBalance = currentBalance - amt;
+    const newTotalSpent = currentSpent + amt;
 
     await client.query(
       "UPDATE wallets SET token_balance = $1, total_spent_tokens = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
@@ -443,7 +445,7 @@ async function spendTokens(userId, amount, title, referenceId) {
         id, wallet_id, user_id, transaction_type, title, token_change,
         balance_after, fiat_equivalent, reference_id, status
       ) VALUES ($1, $2, $3, 'MARKETPLACE_PURCHASE', $4, $5, $6, $7, $8, 'Completed')`,
-      [txId, w.id, userId, title, -amount, newBalance, amount, referenceId]
+      [txId, w.id, userId, title, -amt, newBalance, amt, referenceId]
     );
 
     await client.query("COMMIT");
@@ -475,10 +477,12 @@ async function creditTokens(userId, amount, title, referenceId) {
     if (walletRes.rows.length === 0) {
       throw new Error(`Wallet not found for user ${userId}`);
     }
-
+    const amt = normalizePrice(amount);
     const w = walletRes.rows[0];
-    const newBalance = w.token_balance + amount;
-    const newTotalEarned = w.total_earned_tokens + amount;
+    const currentBalance = normalizePrice(w.token_balance);
+    const currentEarned = normalizePrice(w.total_earned_tokens);
+    const newBalance = currentBalance + amt;
+    const newTotalEarned = currentEarned + amt;
 
     await client.query(
       "UPDATE wallets SET token_balance = $1, total_earned_tokens = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
@@ -491,9 +495,8 @@ async function creditTokens(userId, amount, title, referenceId) {
         id, wallet_id, user_id, transaction_type, title, token_change,
         balance_after, fiat_equivalent, reference_id, status
       ) VALUES ($1, $2, $3, 'TRADE_IN_CREDIT', $4, $5, $6, $7, $8, 'Completed')`,
-      [txId, w.id, userId, title, amount, newBalance, amount, referenceId]
+      [txId, w.id, userId, title, amt, newBalance, amt, referenceId]
     );
-
     await client.query("COMMIT");
     return true;
   } catch (err) {
@@ -822,12 +825,15 @@ async function createOrder({
       if (walletRes.rows.length === 0) {
         throw new Error(`Wallet not found for user ${userId}`);
       }
+      const tokensToPay = normalizePrice(paidWithTokens);
       const w = walletRes.rows[0];
-      if (w.token_balance < paidWithTokens) {
-        throw new Error(`Insufficient tokens: ${w.token_balance} available, ${paidWithTokens} required`);
+      const currentBalance = normalizePrice(w.token_balance);
+      const currentSpent = normalizePrice(w.total_spent_tokens);
+      if (currentBalance < tokensToPay) {
+        throw new Error(`Insufficient tokens: ${currentBalance.toLocaleString("id-ID")} available, ${tokensToPay.toLocaleString("id-ID")} required`);
       }
-      const newBalance = w.token_balance - paidWithTokens;
-      const newTotalSpent = w.total_spent_tokens + paidWithTokens;
+      const newBalance = currentBalance - tokensToPay;
+      const newTotalSpent = currentSpent + tokensToPay;
 
       await client.query(
         "UPDATE wallets SET token_balance = $1, total_spent_tokens = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
@@ -840,10 +846,9 @@ async function createOrder({
           id, wallet_id, user_id, transaction_type, title, token_change,
           balance_after, fiat_equivalent, reference_id, status
         ) VALUES ($1, $2, $3, 'MARKETPLACE_PURCHASE', $4, $5, $6, $7, $8, 'Completed')`,
-        [txId, w.id, userId, `Marketplace Order #${orderId}`, -paidWithTokens, newBalance, paidWithTokens, orderId]
+        [txId, w.id, userId, `Marketplace Order #${orderId}`, -tokensToPay, newBalance, tokensToPay, orderId]
       );
     }
-
     // 2. Insert order using user profile for missing shipping details
     const fullName = (shippingAddress.fullName && shippingAddress.fullName.trim()) || u.full_name;
     const street = (shippingAddress.street && shippingAddress.street.trim()) || u.street_address || "";
@@ -993,8 +998,9 @@ async function createTradeIn({
   if (!id || !userId || !brand || !category || assessedValueTokens === undefined) {
     throw new Error("Missing required trade-in fields. Zero fallback allowed.");
   }
+  const normalizedTokens = normalizePrice(assessedValueTokens);
   const p = getPool();
-  const statusMessage = `Assessment complete! Offer of ${assessedValueTokens.toLocaleString("id-ID")} RT (Rp ${assessedValueTokens.toLocaleString("id-ID")} value) ready for your acceptance.`;
+  const statusMessage = `Assessment complete! Offer of ${normalizedTokens.toLocaleString("id-ID")} RT (Rp ${normalizedTokens.toLocaleString("id-ID")} value) ready for your acceptance.`;
 
   await p.query(
     `INSERT INTO trade_ins (
@@ -1014,7 +1020,7 @@ async function createTradeIn({
       condition || "Inspected",
       notes || "",
       photoUrl || null,
-      assessedValueTokens,
+      normalizedTokens,
       statusMessage
     ]
   );
@@ -1046,20 +1052,22 @@ async function acceptTradeIn(tradeInId, userId) {
       throw new Error("This offer has already been accepted and credited.");
     }
 
-    const tokens = Number(item.assessed_value_tokens);
-    const dateStr = new Date().toLocaleDateString();
+    // Normalize tokens to full IDR scale with trailing zeroes (e.g. 110 -> 110000)
+    const tokens = normalizePrice(item.assessed_value_tokens);
+    const dateStr = new Date().toLocaleDateString("id-ID");
     const statusMsg = `Accepted! ${tokens.toLocaleString("id-ID")} RT credited to your digital wallet on ${dateStr}.`;
 
-    // 1. Update trade-in
+    // 1. Update trade-in (also ensure assessed_value_tokens has trailing zeroes in DB)
     await client.query(
       `UPDATE trade_ins
        SET status = 'Credited',
            status_message = $1,
+           assessed_value_tokens = $2,
            circular_outcome = 'Listed on Circular Marketplace / Hub Intake',
            accepted_at = CURRENT_TIMESTAMP,
            updated_at = CURRENT_TIMESTAMP
-       WHERE id = $2`,
-      [statusMsg, tradeInId]
+       WHERE id = $3`,
+      [statusMsg, tokens, tradeInId]
     );
 
     // 2. Credit wallet
@@ -1073,8 +1081,10 @@ async function acceptTradeIn(tradeInId, userId) {
     }
 
     const w = walletRes.rows[0];
-    const newBalance = w.token_balance + tokens;
-    const newTotalEarned = w.total_earned_tokens + tokens;
+    const currentBalance = normalizePrice(w.token_balance);
+    const currentEarned = normalizePrice(w.total_earned_tokens);
+    const newBalance = currentBalance + tokens;
+    const newTotalEarned = currentEarned + tokens;
 
     await client.query(
       "UPDATE wallets SET token_balance = $1, total_earned_tokens = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3",
@@ -1089,7 +1099,6 @@ async function acceptTradeIn(tradeInId, userId) {
       ) VALUES ($1, $2, $3, 'TRADE_IN_CREDIT', $4, $5, $6, $7, $8, 'Completed')`,
       [txId, w.id, userId, `Trade-in Accepted: ${item.title}`, tokens, newBalance, tokens, item.id]
     );
-
     await client.query("COMMIT");
     return { tokens, title: item.title };
   } catch (err) {

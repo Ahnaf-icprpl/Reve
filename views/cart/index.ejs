@@ -28,15 +28,6 @@
     <% } else { %>
       <!-- Items list -->
       <div class="cart-items-list">
-        <!-- Eco impact summary box for this cart -->
-        <div class="card-white" style="border-color: var(--token-border); background-color: var(--token-green-light); padding: 1.25rem;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--token-green-dark); font-weight: 700; font-size: 0.88rem; margin-bottom: 0.25rem;">
-            <span>🌿 Circular Impact of this Order:</span>
-          </div>
-          <span style="font-size: 0.82rem; color: var(--token-green-dark);">
-            By choosing circular garments instead of new, you are conserving approximately <strong><%= cart.totalWaterSaved.toLocaleString() %> Liters</strong> of water and avoiding <strong><%= cart.totalCo2Saved %> kg</strong> of CO2.
-          </span>
-        </div>
 
         <% cart.items.forEach(item => { %>
           <div class="cart-item-row">
@@ -50,21 +41,37 @@
               </h3>
               <div style="font-size: 0.82rem; color: var(--text-secondary); display: flex; gap: 1rem;">
                 <span>Size: <%= item.product.size %></span>
-                <span>Qty: <%= item.quantity %></span>
                 <span>Condition: <%= item.product.condition %></span>
               </div>
               <div style="margin-top: 0.5rem; display: flex; gap: 0.75rem; align-items: baseline;">
                 <span style="font-weight: 700; font-size: 1rem;">Rp <%= formatIdr(item.subtotal) %></span>
                 <span style="font-size: 0.82rem; color: var(--token-green-dark); font-weight: 600;">
-                  ✦ <%= formatIdr(item.subtotal) %> RT
+                  ✦ <%= formatIdr(item.tokenSubtotal || item.subtotal) %> RT
                 </span>
+                <% if (item.quantity > 1) { %>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">(Rp <%= formatIdr(item.product.price) %> each)</span>
+                <% } %>
               </div>
             </div>
 
-            <div>
+            <!-- Quantity Controls and Remove Form -->
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;">
+              <div class="cart-qty-control" style="display: flex; align-items: center; border: 1px solid var(--border-light); border-radius: var(--radius-sm); background: var(--bg-white);">
+                <form action="/cart/update" method="POST" style="margin: 0; display: inline;">
+                  <input type="hidden" name="productId" value="<%= item.product.id %>">
+                  <input type="hidden" name="action" value="decrease">
+                  <button type="submit" class="btn-qty" aria-label="Decrease quantity" title="Decrease quantity">&minus;</button>
+                </form>
+                <span class="qty-display"><%= item.quantity %></span>
+                <form action="/cart/update" method="POST" style="margin: 0; display: inline;">
+                  <input type="hidden" name="productId" value="<%= item.product.id %>">
+                  <input type="hidden" name="action" value="increase">
+                  <button type="submit" class="btn-qty" aria-label="Increase quantity" title="Increase quantity">&plus;</button>
+                </form>
+              </div>
               <form action="/cart/remove" method="POST">
                 <input type="hidden" name="productId" value="<%= item.product.id %>">
-                <button type="submit" class="btn btn-secondary btn-sm" style="color: #b91c1c; border-color: #fecaca;">
+                <button type="submit" class="btn btn-secondary btn-sm" style="color: #b91c1c; border-color: #fecaca; padding: 0.25rem 0.6rem; font-size: 0.75rem;">
                   Remove
                 </button>
               </form>
@@ -120,7 +127,7 @@
             <% } %>
           </div>
 
-          <a href="/checkout" class="btn btn-primary btn-block" style="padding: 0.9rem;">
+          <a href="/checkout" class="btn btn-primary btn-block btn-checkout" style="padding: 1rem; font-size: 1rem; font-weight: 700; text-align: center; display: block; border-radius: var(--radius-sm);">
             Proceed to Checkout &rarr;
           </a>
 

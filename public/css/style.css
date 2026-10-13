@@ -232,6 +232,59 @@ button, input, select, textarea {
   line-height: 1;
 }
 
+/* Navigation Shopping Bag Button */
+.nav-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.nav-cart-btn:hover,
+.nav-cart-btn.active {
+  border-color: var(--text-primary);
+  background-color: var(--border-subtle);
+}
+
+.nav-cart-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: var(--text-muted);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  line-height: 17px;
+  border-radius: var(--radius-full);
+  text-align: center;
+  padding: 0 3px;
+}
+
+.nav-cart-count.has-items {
+  background-color: var(--token-green);
+}
+
+.mobile-only-cart {
+  display: none;
+}
 .profile-avatar-large {
   width: 72px;
   height: 72px;
@@ -1442,6 +1495,54 @@ h1, h2, h3, h4, h5 {
   top: 6rem;
 }
 
+/* Cart Stepper Controls */
+.cart-qty-form,
+.cart-qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-white);
+  padding: 0.15rem 0.25rem;
+}
+
+.btn-qty {
+  background: none;
+  border: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.btn-qty:hover {
+  background-color: var(--border-subtle);
+}
+
+.qty-display {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.btn-checkout {
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.btn-checkout:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
 /* -------------------------------------------------------------------
    Site Footer
    ------------------------------------------------------------------- */
@@ -1575,6 +1676,9 @@ h1, h2, h3, h4, h5 {
   }
   .nav-links.open {
     display: flex;
+  }
+  .mobile-only-cart {
+    display: block;
   }
   .catalog-layout {
     grid-template-columns: 1fr;

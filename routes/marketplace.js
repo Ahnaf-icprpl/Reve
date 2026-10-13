@@ -88,7 +88,7 @@ router.get("/cart", async (req, res, next) => {
 // Add to cart
 router.post("/cart/add", async (req, res, next) => {
   try {
-    const userId = res.locals.currentUser.id;
+    const userId = (res.locals.currentUser && res.locals.currentUser.id) ? res.locals.currentUser.id : null;
     const { productId, quantity } = req.body;
     const qty = parseInt(quantity, 10) || 1;
     const success = await db.addToCart(userId, req.sessionID, productId, qty);
@@ -101,6 +101,45 @@ router.post("/cart/add", async (req, res, next) => {
 
     const referer = req.get("Referer") || "/marketplace";
     res.redirect(referer);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Update cart item quantity
+router.post("/cart/update", async (req, res, next) => {
+  try {
+    const userId = (res.locals.currentUser && res.locals.currentUser.id) ? res.locals.currentUser.id : null;
+    const { productId, action, quantity } = req.body;
+
+    if (!productId) {
+      return res.redirect("/cart");
+    }
+
+    const currentCart = await db.getCart(userId, req.sessionID);
+    const existingItem = currentCart.items.find(i => i.product && i.product.id === productId);
+
+    let newQty = existingItem ? existingItem.quantity : 1;
+
+    if (action === "increase") {
+      newQty = newQty + 1;
+    } else if (action === "decrease") {
+      newQty = newQty - 1;
+    } else if (quantity !== undefined) {
+      const parsed = parseInt(Array.isArray(quantity) ? quantity[quantity.length - 1] : quantity, 10);
+      if (!isNaN(parsed)) {
+        newQty = parsed;
+      }
+    }
+
+    if (newQty <= 0) {
+      await db.removeFromCart(userId, req.sessionID, productId);
+      req.session.toast = { type: "info", message: "Item removed from bag." };
+    } else {
+      await db.updateCartQuantity(userId, req.sessionID, productId, newQty);
+      req.session.toast = { type: "success", message: "Bag updated." };
+    }
+    res.redirect("/cart");
   } catch (err) {
     next(err);
   }

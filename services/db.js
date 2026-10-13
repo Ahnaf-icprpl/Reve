@@ -513,31 +513,28 @@ async function getCart(userId, sessionId = null) {
   }
 
   const p = getPool();
-  let res;
-  if (userId) {
-    res = await p.query(
-      `SELECT c.id AS cart_item_id, c.quantity, p.*
-       FROM cart_items c
-       JOIN products p ON c.product_id = p.id
-       WHERE c.user_id = $1
-       ORDER BY c.created_at ASC`,
-      [userId]
-    );
-  } else {
-    res = await p.query(
-      `SELECT c.id AS cart_item_id, c.quantity, p.*
-       FROM cart_items c
-       JOIN products p ON c.product_id = p.id
-       WHERE c.session_id = $1
-       ORDER BY c.created_at ASC`,
-      [sessionId]
-    );
-  }
-
-  const items = res.rows.map(row => ({
-    product: mapProduct(row),
-    quantity: row.quantity
-  }));
+  let res = await p.query(
+    `SELECT c.id AS cart_item_id, c.quantity, p.*
+     FROM cart_items c
+     JOIN products p ON c.product_id = p.id
+     WHERE (
+       ($1::varchar IS NOT NULL AND c.user_id = $1)
+       OR ($2::varchar IS NOT NULL AND c.session_id = $2)
+     )
+     ORDER BY c.created_at ASC`,
+    [userId || null, sessionId || null]
+  );
+  const items = res.rows.map(row => {
+    const product = mapProduct(row);
+    const quantity = row.quantity || 1;
+    return {
+      cartItemId: row.cart_item_id,
+      product,
+      quantity,
+      subtotal: product ? product.price * quantity : 0,
+      tokenSubtotal: product ? product.tokens * quantity : 0
+    };
+  });
 
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -594,17 +591,62 @@ async function removeFromCart(userId, sessionId = null, productId) {
     throw new Error("userId or sessionId is required for removeFromCart. Zero fallback allowed.");
   }
   const p = getPool();
+  await p.query(
+    `DELETE FROM cart_items
+     WHERE product_id = $1 AND (
+       ($2::varchar IS NOT NULL AND user_id = $2)
+       OR ($3::varchar IS NOT NULL AND session_id = $3)
+     )`,
+    [productId, userId || null, sessionId || null]
+  );
+  return true;
+}
+/**
+ * Update product quantity in cart in PostgreSQL
+ */
+async function updateCartQuantity(userId, sessionId = null, productId, quantity) {
+  if (!userId && !sessionId) {
+    throw new Error("userId or sessionId is required for updateCartQuantity. Zero fallback allowed.");
+  }
+  const qty = parseInt(quantity, 10);
+  if (isNaN(qty) || qty <= 0) {
+    return removeFromCart(userId, sessionId, productId);
+  }
+
+  const p = getPool();
+  const findRes = await p.query(
+    `SELECT id FROM cart_items
+     WHERE product_id = $1 AND (
+       ($2::varchar IS NOT NULL AND user_id = $2)
+       OR ($3::varchar IS NOT NULL AND session_id = $3)
+     ) LIMIT 1`,
+    [productId, userId || null, sessionId || null]
+  );
+
+  if (findRes.rows.length > 0) {
+    await p.query(
+      "UPDATE cart_items SET quantity = $1 WHERE id = $2",
+      [qty, findRes.rows[0].id]
+    );
+    return true;
+  }
+
   if (userId) {
     await p.query(
-      "DELETE FROM cart_items WHERE user_id = $1 AND product_id = $2",
-      [userId, productId]
+      `INSERT INTO cart_items (user_id, session_id, product_id, quantity)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (user_id, product_id)
+       DO UPDATE SET quantity = EXCLUDED.quantity`,
+      [userId, sessionId, productId, qty]
     );
   } else {
     await p.query(
-      "DELETE FROM cart_items WHERE session_id = $1 AND product_id = $2",
-      [sessionId, productId]
+      `INSERT INTO cart_items (session_id, product_id, quantity)
+       VALUES ($1, $2, $3)`,
+      [sessionId, productId, qty]
     );
   }
+  return true;
 }
 
 /**
@@ -615,11 +657,15 @@ async function clearCart(userId, sessionId = null) {
     throw new Error("userId or sessionId is required for clearCart. Zero fallback allowed.");
   }
   const p = getPool();
-  if (userId) {
-    await p.query("DELETE FROM cart_items WHERE user_id = $1", [userId]);
-  } else {
-    await p.query("DELETE FROM cart_items WHERE session_id = $1", [sessionId]);
-  }
+  await p.query(
+    `DELETE FROM cart_items
+     WHERE (
+       ($1::varchar IS NOT NULL AND user_id = $1)
+       OR ($2::varchar IS NOT NULL AND session_id = $2)
+     )`,
+    [userId || null, sessionId || null]
+  );
+  return true;
 }
 
 /**
@@ -1253,6 +1299,7 @@ module.exports = {
   addToCart,
   removeFromCart,
   clearCart,
+  updateCartQuantity,
   getOrders,
   getOrderById,
   createOrder,

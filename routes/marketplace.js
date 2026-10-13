@@ -168,16 +168,16 @@ router.post("/checkout", async (req, res, next) => {
       if (wallet.balance < totalAmount) {
         req.session.toast = {
           type: "error",
-          message: `Insufficient token balance (${wallet.balance} RT available, required ${totalAmount} RT). Use Card or split payment.`
+          message: `Insufficient token balance (${wallet.balance.toLocaleString("id-ID")} RT available, required ${totalAmount.toLocaleString("id-ID")} RT). Use Card or split payment.`
         };
         return res.redirect("/checkout");
       }
       paidWithTokens = totalAmount;
-      paymentLabel = "Revé Tokens (1:1 Value Peg)";
+      paymentLabel = "Revé Tokens";
     } else if (paymentMethod === "split") {
       paidWithTokens = Math.min(wallet.balance, totalAmount);
       paidWithCash = totalAmount - paidWithTokens;
-      paymentLabel = `Split: ${paidWithTokens} RT + $${paidWithCash.toFixed(2)} Card`;
+      paymentLabel = `Split: ${paidWithTokens.toLocaleString("id-ID")} RT + Rp ${paidWithCash.toLocaleString("id-ID")} Card`;
     } else {
       paidWithCash = totalAmount;
       paymentLabel = "Credit / Debit Card";
@@ -195,7 +195,7 @@ router.post("/checkout", async (req, res, next) => {
 
     req.session.toast = {
       type: "success",
-      message: `Order #${orderId} confirmed! ${paidWithTokens > 0 ? `${paidWithTokens} RT redeemed.` : ""}`
+      message: `Order #${orderId} confirmed! ${paidWithTokens > 0 ? `${paidWithTokens.toLocaleString("id-ID")} RT redeemed.` : ""}`
     };
 
     res.redirect(`/orders/${orderId}`);

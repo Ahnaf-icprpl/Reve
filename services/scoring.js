@@ -7,12 +7,12 @@
 
 // Category base valuation points
 const CATEGORY_BASE_SCORES = {
-  outerwear: 85,
-  knitwear: 55,
-  dresses: 65,
-  bottoms: 50,
-  tops: 38,
-  accessories: 35
+  outerwear: 150000,
+  knitwear: 120000,
+  dresses: 120000,
+  bottoms: 90000,
+  tops: 75000,
+  accessories: 50000
 };
 
 // Brand tier scoring factors
@@ -74,12 +74,16 @@ function calculateTradeInValuation(params = {}) {
       valuationTokens: 0,
       fiatValue: 0,
       scoreGrade: "Pending",
-      notes: "Brand required for assessment"
+      notes: "Brand required for assessment",
+      displayTokens: "— RT",
+      displaySummary: "Not defined yet \u2022 Assessed upon intake review",
+      placeholderEstimate: "— RT",
+      placeholderSummary: "Not defined yet \u2022 Assessed upon intake review"
     };
   }
 
   // 1. Category Base Score
-  let baseScore = CATEGORY_BASE_SCORES[category] || 35;
+  let baseScore = CATEGORY_BASE_SCORES[category] || 60000;
 
   // 2. Brand Prestige Factor
   let brandMultiplier = 1.0;
@@ -107,8 +111,8 @@ function calculateTradeInValuation(params = {}) {
 
   // Calculate final token valuation score (minimum 15 RT)
   const rawScore = baseScore * brandMultiplier * conditionMultiplier * materialMultiplier;
-  const valuationTokens = Math.max(15, Math.round(rawScore));
-  const fiatValue = valuationTokens; // 1:1 nominal value peg
+  const valuationTokens = Math.max(35000, Math.round(rawScore / 1000) * 1000);
+  const fiatValue = valuationTokens; // 1 RT = 1 IDR
 
   return {
     isValid: true,
@@ -116,8 +120,12 @@ function calculateTradeInValuation(params = {}) {
     fiatValue,
     scoreGrade: conditionInfo.scoreGrade,
     conditionLabel: conditionInfo.label,
-    estimatedWaterSaved: Math.round(valuationTokens * 25), // ~25L water saved per valuation point
-    estimatedCo2Avoided: Number((valuationTokens * 0.08).toFixed(1))
+    estimatedWaterSaved: Math.round((valuationTokens / 1000) * 15),
+    estimatedCo2Avoided: Number(((valuationTokens / 1000) * 0.04).toFixed(1)),
+    displayTokens: `~${valuationTokens.toLocaleString("id-ID")} RT`,
+    displaySummary: `Indicative ~${valuationTokens.toLocaleString("id-ID")} RT (Rp ${fiatValue.toLocaleString("id-ID")}) \u2022 Condition Grade: ${conditionInfo.scoreGrade}`,
+    placeholderEstimate: "— RT",
+    placeholderSummary: "Not defined yet \u2022 Assessed upon intake review"
   };
 }
 
@@ -184,7 +192,7 @@ function calculatePlatformMetrics(data = {}) {
     data.tradeIns.forEach(t => {
       if (t.status === "Credited" || t.status === "Offer Ready") {
         garmentsRecirculated += 1;
-        totalWaterLiters += (t.assessedValueTokens || 0) * 25;
+        totalWaterLiters += Math.round(((t.assessedValueTokens || 0) / 1000) * 15);
       }
     });
   }

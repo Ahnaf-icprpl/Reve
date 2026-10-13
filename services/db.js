@@ -140,6 +140,20 @@ async function getDefaultUser() {
 }
 
 /**
+ * Normalize price/tokens to full IDR scale ensuring thousands trailing zeroes
+ * (e.g. 68 -> 68000 so it formats as 68.000 in IDR)
+ */
+function normalizePrice(val) {
+  if (val === null || val === undefined) return 0;
+  const num = Number(val);
+  if (isNaN(num)) return 0;
+  if (num > 0 && num < 1000) {
+    return num * 1000;
+  }
+  return num;
+}
+
+/**
  * Map raw database product row to template-friendly object
  */
 function mapProduct(row) {
@@ -156,9 +170,9 @@ function mapProduct(row) {
     conditionScore: row.condition_score,
     conditionNotes: row.condition_notes,
     material: row.material,
-    price: Number(row.price_fiat),
-    tokens: Number(row.tokens),
-    originalRetail: row.original_retail ? Number(row.original_retail) : null,
+    price: normalizePrice(row.price_fiat),
+    tokens: normalizePrice(row.tokens),
+    originalRetail: row.original_retail ? normalizePrice(row.original_retail) : null,
     ecoSavings: {
       waterLiters: Number(row.water_liters_saved || 0),
       co2Kg: Number(row.co2_kg_saved || 0)
@@ -362,14 +376,14 @@ async function getWalletSummary(userId) {
     type: tx.transaction_type,
     title: tx.title,
     date: tx.created_at,
-    tokenChange: Number(tx.token_change),
-    balanceAfter: Number(tx.balance_after),
-    fiatEquivalent: Number(tx.fiat_equivalent),
+    tokenChange: normalizePrice(tx.token_change),
+    balanceAfter: normalizePrice(tx.balance_after),
+    fiatEquivalent: normalizePrice(tx.fiat_equivalent),
     status: tx.status,
     referenceId: tx.reference_id
   }));
 
-  const balance = Number(w.token_balance);
+  const balance = normalizePrice(w.token_balance);
   const deductionRate = Number(w.conversion_deduction_rate);
   const cashValue = (balance * (1 - deductionRate)).toFixed(2);
 
@@ -377,15 +391,15 @@ async function getWalletSummary(userId) {
     id: w.id,
     tokenName: "Revé Token",
     tokenSymbol: "RT",
-    currencyCode: "USD",
-    currencySymbol: "$",
+    currencyCode: "IDR",
+    currencySymbol: "Rp",
     balance: balance,
     marketplacePurchasingValue: balance,
     cashPayoutValue: parseFloat(cashValue),
     conversionDeductionRate: deductionRate * 100,
-    totalEarnedTokens: Number(w.total_earned_tokens),
-    totalSpentTokens: Number(w.total_spent_tokens),
-    totalWithdrawnCash: Number(w.total_withdrawn_cash),
+    totalEarnedTokens: normalizePrice(w.total_earned_tokens),
+    totalSpentTokens: normalizePrice(w.total_spent_tokens),
+    totalWithdrawnCash: normalizePrice(w.total_withdrawn_cash),
     ledger
   };
 }
@@ -635,16 +649,16 @@ async function getOrders(userId) {
         id: item.product_id,
         title: item.title,
         brand: item.brand,
-        price: Number(item.unit_price),
-        tokens: Number(item.unit_tokens),
+        price: normalizePrice(item.unit_price),
+        tokens: normalizePrice(item.unit_tokens),
         quantity: item.quantity,
         image: item.image_url
       })),
-      subtotal: Number(o.subtotal_fiat),
-      shipping: Number(o.shipping_fiat),
-      totalFiat: Number(o.total_fiat),
-      paidWithTokens: Number(o.paid_with_tokens),
-      paidWithCash: Number(o.paid_with_cash),
+      subtotal: normalizePrice(o.subtotal_fiat),
+      shipping: normalizePrice(o.shipping_fiat),
+      totalFiat: normalizePrice(o.total_fiat),
+      paidWithTokens: normalizePrice(o.paid_with_tokens),
+      paidWithCash: normalizePrice(o.paid_with_cash),
       paymentMethod: o.payment_method,
       shippingAddress: {
         fullName: o.shipping_name,
@@ -693,16 +707,16 @@ async function getOrderById(orderId, userId) {
       id: item.product_id,
       title: item.title,
       brand: item.brand,
-      price: Number(item.unit_price),
-      tokens: Number(item.unit_tokens),
+      price: normalizePrice(item.unit_price),
+      tokens: normalizePrice(item.unit_tokens),
       quantity: item.quantity,
       image: item.image_url
     })),
-    subtotal: Number(o.subtotal_fiat),
-    shipping: Number(o.shipping_fiat),
-    totalFiat: Number(o.total_fiat),
-    paidWithTokens: Number(o.paid_with_tokens),
-    paidWithCash: Number(o.paid_with_cash),
+    subtotal: normalizePrice(o.subtotal_fiat),
+    shipping: normalizePrice(o.shipping_fiat),
+    totalFiat: normalizePrice(o.total_fiat),
+    paidWithTokens: normalizePrice(o.paid_with_tokens),
+    paidWithCash: normalizePrice(o.paid_with_cash),
     paymentMethod: o.payment_method,
     shippingAddress: {
       fullName: o.shipping_name,
@@ -876,8 +890,7 @@ async function getTradeIns(userId) {
     material: row.material,
     condition: row.condition,
     notes: row.notes,
-    photoUrl: row.photo_url,
-    assessedValueTokens: Number(row.assessed_value_tokens),
+    assessedValueTokens: normalizePrice(row.assessed_value_tokens),
     status: row.status,
     statusMessage: row.status_message,
     circularOutcome: row.circular_outcome,
@@ -906,8 +919,7 @@ async function getTradeInById(tradeInId) {
     material: row.material,
     condition: row.condition,
     notes: row.notes,
-    photoUrl: row.photo_url,
-    assessedValueTokens: Number(row.assessed_value_tokens),
+    assessedValueTokens: normalizePrice(row.assessed_value_tokens),
     status: row.status,
     statusMessage: row.status_message,
     circularOutcome: row.circular_outcome,
@@ -936,7 +948,7 @@ async function createTradeIn({
     throw new Error("Missing required trade-in fields. Zero fallback allowed.");
   }
   const p = getPool();
-  const statusMessage = `Assessment complete! Offer of ${assessedValueTokens} RT ($${assessedValueTokens}.00 value) ready for your acceptance.`;
+  const statusMessage = `Assessment complete! Offer of ${assessedValueTokens.toLocaleString("id-ID")} RT (Rp ${assessedValueTokens.toLocaleString("id-ID")} value) ready for your acceptance.`;
 
   await p.query(
     `INSERT INTO trade_ins (
@@ -990,7 +1002,7 @@ async function acceptTradeIn(tradeInId, userId) {
 
     const tokens = Number(item.assessed_value_tokens);
     const dateStr = new Date().toLocaleDateString();
-    const statusMsg = `Accepted! ${tokens} RT credited to your digital wallet on ${dateStr}.`;
+    const statusMsg = `Accepted! ${tokens.toLocaleString("id-ID")} RT credited to your digital wallet on ${dateStr}.`;
 
     // 1. Update trade-in
     await client.query(
@@ -1090,6 +1102,7 @@ async function getDonations(userId) {
       status: d.status,
       submissionDate: d.created_at,
       beneficiaryNotes: d.beneficiary_notes,
+      qrCode: d.qr_code,
       categories: catRes.rows.map(c => c.category_name),
       impactMetrics: {
         textilesDivertedKg: Number(d.textiles_diverted_kg || 0),
@@ -1114,6 +1127,15 @@ async function getDonationById(donationId) {
   if (donRes.rows.length === 0) return null;
   const d = donRes.rows[0];
 
+  let qrCode = d.qr_code;
+  if (!qrCode && d.tracking_number) {
+    try {
+      const QRCode = require("qrcode");
+      qrCode = await QRCode.toString(d.tracking_number, { type: "svg", margin: 1, width: 120 });
+      await p.query("UPDATE donations SET qr_code = $1 WHERE id = $2", [qrCode, d.id]);
+    } catch (_) {}
+  }
+
   const catRes = await p.query(
     "SELECT category_name FROM donation_categories WHERE donation_id = $1",
     [d.id]
@@ -1129,6 +1151,7 @@ async function getDonationById(donationId) {
     status: d.status,
     submissionDate: d.created_at,
     beneficiaryNotes: d.beneficiary_notes,
+    qrCode: qrCode || d.qr_code,
     categories: catRes.rows.map(c => c.category_name),
     impactMetrics: {
       textilesDivertedKg: Number(d.textiles_diverted_kg || 0),
@@ -1154,10 +1177,16 @@ async function createDonation({
   textilesDivertedKg = 0,
   waterSavedLiters = 0,
   landfillDivertedPct = 100,
-  beneficiaryNotes
+  beneficiaryNotes,
+  qrCode = null
 }) {
   if (!id || !userId || !trackingNumber) {
     throw new Error("Missing required donation fields. Zero fallback allowed.");
+  }
+  let finalQrCode = qrCode;
+  if (!finalQrCode) {
+    const QRCode = require("qrcode");
+    finalQrCode = await QRCode.toString(trackingNumber, { type: "svg", margin: 1, width: 120 });
   }
   const p = getPool();
   const client = await p.connect();
@@ -1169,8 +1198,8 @@ async function createDonation({
         id, user_id, title, item_count_label, item_count_numeric,
         damage_assessment, drop_off_method, tracking_number, status,
         textiles_diverted_kg, water_saved_liters, landfill_diverted_pct,
-        beneficiary_notes
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pass Generated', $9, $10, $11, $12)`,
+        beneficiary_notes, qr_code
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pass Generated', $9, $10, $11, $12, $13)`,
       [
         id,
         userId,
@@ -1183,7 +1212,8 @@ async function createDonation({
         textilesDivertedKg,
         waterSavedLiters,
         landfillDivertedPct,
-        beneficiaryNotes
+        beneficiaryNotes,
+        finalQrCode
       ]
     );
 

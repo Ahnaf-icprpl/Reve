@@ -10,7 +10,7 @@
         Circular Clothing & Textiles
       </h1>
       <p style="color: var(--text-secondary); max-width: 650px; font-size: 0.95rem;">
-        Discover pre-loved and verified circular garments. Every listing can be purchased with Revé Tokens (RT) at a guaranteed 1:1 value peg (1 RT = 1 RP).
+        Discover pre-loved and verified circular garments. Every listing can be purchased with Revé Tokens (RT, 1 RT = 1 Rp).
       </p>
     </div>
   </section>
@@ -71,7 +71,7 @@
       <div class="card-white" style="padding: 1.25rem;">
         <span style="font-size: 0.72rem; font-weight: 700; color: var(--token-green); text-transform: uppercase;">Available Tokens</span>
         <div style="font-size: 1.4rem; font-weight: 700; margin: 0.25rem 0;">
-          <%= wallet.balance %> RT
+          <%= formatIdr(wallet.balance) %> RT
         </div>
         <p style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin: 0;">
           Redeemable 1:1 on any circular garment here.
@@ -120,7 +120,6 @@
                 </a>
                 <div class="product-badges">
                   <span class="badge badge-condition"><%= product.condition %></span>
-                  <span class="badge badge-token"><%= product.tokens %> RT Peg</span>
                 </div>
               </div>
 
@@ -136,11 +135,10 @@
 
                 <div class="product-price-row">
                   <div>
-                    <span class="fiat-price">$<%= product.price %></span>
-                    <span class="token-peg-tag">USD</span>
+                    <span class="fiat-price">Rp <%= formatIdr(product.price) %></span>
                   </div>
                   <div class="token-price">
-                    <span><%= product.tokens %> RT</span>
+                    <span><%= formatIdr(product.tokens) %> RT</span>
                   </div>
                 </div>
 

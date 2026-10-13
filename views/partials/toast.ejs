@@ -1,5 +1,5 @@
 <% if (typeof toast !== 'undefined' && toast) { %>
-  <div class="toast-banner toast-<%= toast.type %>" id="flashToast" role="alert">
+  <div class="toast-banner toast-<%= toast.type %>" id="flashToast" role="alert" data-dismiss-duration="<%= toast.duration || 6000 %>" data-fade-duration="<%= toast.fadeDuration || 400 %>">
     <div class="toast-content container">
       <div class="toast-indicator">
         <% if (toast.type === 'success') { %>

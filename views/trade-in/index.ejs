@@ -42,7 +42,7 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label" for="tiBrand">Brand</label>
-              <input type="text" id="tiBrand" name="brand" list="brandOptions" class="form-input" placeholder="Type or select a brand..." required autocomplete="off">
+              <input type="text" id="tiBrand" name="brand" list="brandOptions" class="form-input" placeholder="Type or select a brand..." required autocomplete="off" data-debounce-ms="250">
               <datalist id="brandOptions">
                 <option value="Arc'teryx">
                 <option value="Patagonia">
@@ -147,10 +147,10 @@
           </h3>
 
           <div style="padding: 1.5rem; background-color: var(--bg-white); border: 1px dashed var(--border-light); border-radius: var(--radius-sm); text-align: center; margin-bottom: 1.5rem;">
-            <div id="tiEstimateDisplay" style="font-size: 2.25rem; font-weight: 700; color: var(--text-muted); line-height: 1;">
+            <div id="tiEstimateDisplay" data-placeholder="— RT" style="font-size: 2.25rem; font-weight: 700; color: var(--text-muted); line-height: 1;">
               — RT
             </div>
-            <div id="tiFiatDisplay" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">
+            <div id="tiFiatDisplay" data-placeholder="Not defined yet &bull; Assessed upon intake review" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.4rem;">
               Not defined yet &bull; Assessed upon intake review
             </div>
           </div>

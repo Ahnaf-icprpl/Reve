@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS orders (
     subtotal_fiat NUMERIC(10, 2) NOT NULL,
     shipping_fiat NUMERIC(10, 2) DEFAULT 0.00,
     total_fiat NUMERIC(10, 2) NOT NULL,
-    paid_with_tokens INTEGER DEFAULT 0, -- RT tokens spent (1:1 value peg)
+    paid_with_tokens INTEGER DEFAULT 0, -- RT tokens spent
     paid_with_cash NUMERIC(10, 2) DEFAULT 0.00,
     payment_method VARCHAR(128) NOT NULL,
     shipping_name VARCHAR(255) NOT NULL,

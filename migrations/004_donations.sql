@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS donations (
     water_saved_liters INTEGER DEFAULT 0,
     landfill_diverted_pct INTEGER DEFAULT 100,
     beneficiary_notes TEXT,
+    qr_code TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

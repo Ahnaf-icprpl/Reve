@@ -53,7 +53,7 @@
                   </span>
                 <% } else if (item.status === 'Credited') { %>
                   <span class="badge badge-status-credited" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
-                    ✓ <%= item.assessedValueTokens %> RT Credited to Wallet
+                    ✓ <%= formatIdr(item.assessedValueTokens) %> RT Credited to Wallet
                   </span>
                 <% } else { %>
                   <span class="badge badge-condition" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
@@ -86,10 +86,10 @@
                   Assessed Valuation
                 </span>
                 <div style="font-size: 1.75rem; font-weight: 800; color: var(--token-green-dark); line-height: 1.1; margin: 0.25rem 0;">
-                  <%= item.assessedValueTokens %> RT
+                  <%= formatIdr(item.assessedValueTokens) %> RT
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-muted);">
-                  $<%= item.assessedValueTokens %>.00 1:1 Value Peg
+                  Rp <%= formatIdr(item.assessedValueTokens) %>
                 </div>
               </div>
             </div>
@@ -99,7 +99,7 @@
               <div style="background-color: var(--token-green-light); border: 1px solid var(--token-border); border-radius: var(--radius-sm); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
                   <strong style="color: var(--token-green-dark); font-size: 0.95rem; display: block;">
-                    Valuation Offer of <%= item.assessedValueTokens %> RT ($<%= item.assessedValueTokens %>.00 Value)
+                    Valuation Offer of <%= formatIdr(item.assessedValueTokens) %> RT (Rp <%= formatIdr(item.assessedValueTokens) %> Value)
                   </strong>
                   <span style="font-size: 0.82rem; color: var(--token-green-dark);">
                     Accept to credit tokens immediately to your digital wallet balance.

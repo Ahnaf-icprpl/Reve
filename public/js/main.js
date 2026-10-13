@@ -10,14 +10,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // 2. Auto-dismiss flash toast after 6 seconds
+  // 2. Auto-dismiss flash toast using duration configured in data attribute
   const toast = document.getElementById("flashToast");
   if (toast) {
-    setTimeout(() => {
-      toast.style.transition = "opacity 0.4s ease";
-      toast.style.opacity = "0";
-      setTimeout(() => toast.remove(), 400);
-    }, 6000);
+    const dismissDuration = parseInt(toast.dataset.dismissDuration, 10);
+    const fadeDuration = parseInt(toast.dataset.fadeDuration, 10) || 400;
+    if (!isNaN(dismissDuration) && dismissDuration > 0) {
+      setTimeout(() => {
+        toast.style.transition = `opacity ${fadeDuration / 1000}s ease`;
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), fadeDuration);
+      }, dismissDuration);
+    }
   }
 
   // Interactive Trade-In Server-Side Valuation Preview (No client-side hardcoding)
@@ -30,14 +34,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (tiBrandInput && tiCategorySelect && tiConditionSelect && tiEstimateDisplay) {
     let debounceTimer = null;
+    const defaultEstimatePlaceholder = tiEstimateDisplay.dataset.placeholder || tiEstimateDisplay.textContent.trim();
+    const defaultFiatPlaceholder = tiFiatDisplay ? (tiFiatDisplay.dataset.placeholder || tiFiatDisplay.textContent.trim()) : "";
+    const debounceDelay = parseInt(tiBrandInput.dataset.debounceMs, 10);
 
     async function fetchServerEstimate() {
       const brand = (tiBrandInput.value || "").trim();
       if (!brand) {
-        tiEstimateDisplay.textContent = "— RT";
+        tiEstimateDisplay.textContent = defaultEstimatePlaceholder;
         tiEstimateDisplay.style.color = "var(--text-muted)";
         if (tiFiatDisplay) {
-          tiFiatDisplay.textContent = "Not defined yet \u2022 Assessed upon intake review";
+          tiFiatDisplay.textContent = defaultFiatPlaceholder;
         }
         return;
       }
@@ -59,10 +66,16 @@ document.addEventListener("DOMContentLoaded", function () {
         if (res.ok) {
           const data = await res.json();
           if (data && data.isValid) {
-            tiEstimateDisplay.textContent = `~${data.valuationTokens} RT`;
+            tiEstimateDisplay.textContent = data.displayTokens || "";
             tiEstimateDisplay.style.color = "var(--token-green-dark)";
             if (tiFiatDisplay) {
-              tiFiatDisplay.textContent = `Indicative ~${data.valuationTokens} RT ($${data.fiatValue}.00) \u2022 Condition Grade: ${data.scoreGrade}`;
+              tiFiatDisplay.textContent = data.displaySummary || "";
+            }
+          } else if (data && !data.isValid) {
+            tiEstimateDisplay.textContent = data.placeholderEstimate || defaultEstimatePlaceholder;
+            tiEstimateDisplay.style.color = "var(--text-muted)";
+            if (tiFiatDisplay) {
+              tiFiatDisplay.textContent = data.placeholderSummary || defaultFiatPlaceholder;
             }
           }
         }
@@ -73,7 +86,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function onInputChange() {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(fetchServerEstimate, 250);
+      if (!isNaN(debounceDelay) && debounceDelay >= 0) {
+        debounceTimer = setTimeout(fetchServerEstimate, debounceDelay);
+      } else {
+        fetchServerEstimate();
+      }
     }
 
     tiBrandInput.addEventListener("input", onInputChange);

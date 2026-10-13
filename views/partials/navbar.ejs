@@ -29,10 +29,28 @@
         <a href="/about" class="nav-item <%= (typeof currentPath !== 'undefined' && currentPath === '/about') ? 'active' : '' %>">
           How It Works
         </a>
+        <a href="/cart" class="nav-item mobile-only-cart <%= (typeof currentPath !== 'undefined' && currentPath === '/cart') ? 'active' : '' %>">
+          Bag (<%= (typeof cart !== 'undefined' && cart && cart.count) ? cart.count : 0 %>)
+        </a>
       </div>
 
       <!-- User profile badge: circle pfp icon and name -->
       <div class="navbar-actions">
+        <!-- Shopping Bag Link -->
+        <a href="/cart" class="nav-cart-btn <%= (typeof currentPath !== 'undefined' && currentPath === '/cart') ? 'active' : '' %>" title="View Shopping Bag" aria-label="Shopping Bag">
+          <div class="nav-cart-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <% const bagCount = (typeof cart !== 'undefined' && cart && cart.count) ? cart.count : 0; %>
+            <span class="nav-cart-count <%= bagCount > 0 ? 'has-items' : '' %>" id="navCartCount"><%= bagCount %></span>
+          </div>
+          <span class="nav-cart-label">Bag</span>
+        </a>
+
+        <!-- User profile badge -->
         <a href="/profile" class="user-profile-nav" title="View Profile">
           <div class="profile-pfp-circle" aria-label="Profile picture">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

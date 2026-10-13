@@ -54,7 +54,14 @@ app.use(async (req, res, next) => {
       res.locals.currentUser = await db.getDefaultUser();
     }
 
-    res.locals.badges = await db.getUserBadges(res.locals.currentUser.id);
+    const userId = res.locals.currentUser ? res.locals.currentUser.id : null;
+    const [badges, cart] = await Promise.all([
+      userId ? db.getUserBadges(userId) : [],
+      db.getCart(userId, req.sessionID).catch(() => ({ items: [], count: 0, subtotal: 0, tokenSubtotal: 0, totalWaterSaved: 0, totalCo2Saved: 0 }))
+    ]);
+
+    res.locals.badges = badges;
+    res.locals.cart = cart;
     next();
   } catch (err) {
     next(err);

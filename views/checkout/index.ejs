@@ -20,24 +20,24 @@
         <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
           <div class="form-group">
             <label class="form-label" for="fullName">Full Name</label>
-            <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Full Name" required>
+            <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Full Name" value="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.name) ? currentUser.name : '' %>" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="street">Street Address</label>
-            <input type="text" id="street" name="street" class="form-input" placeholder="Street Address" required>
+            <input type="text" id="street" name="street" class="form-input" placeholder="Street Address" value="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.address && currentUser.address.street) ? currentUser.address.street : '' %>" required>
           </div>
           <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label class="form-label" for="city">City</label>
-              <input type="text" id="city" name="city" class="form-input" placeholder="City" required>
+              <input type="text" id="city" name="city" class="form-input" placeholder="City" value="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.address && currentUser.address.city) ? currentUser.address.city : '' %>" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="state">State</label>
-              <input type="text" id="state" name="state" class="form-input" placeholder="State" required>
+              <input type="text" id="state" name="state" class="form-input" placeholder="State" value="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.address && currentUser.address.state) ? currentUser.address.state : '' %>" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="postalCode">Zip / Postal Code</label>
-              <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="Postal Code" required>
+              <input type="text" id="postalCode" name="postalCode" class="form-input" placeholder="Postal Code" value="<%= (typeof currentUser !== 'undefined' && currentUser && currentUser.address && currentUser.address.postalCode) ? currentUser.address.postalCode : '' %>" required>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
 
           <!-- Option C: Traditional Card -->
           <label style="border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start; cursor: pointer; background-color: var(--bg-white);">
-            <input type="radio" name="paymentMethod" value="card" <%= wallet.balance === 0 ? 'checked' : '' %> style="margin-top: 0.25rem;">
+            <input type="radio" name="paymentMethod" value="card" <%= (wallet.balance <= 0 || !wallet.balance) ? 'checked' : '' %> style="margin-top: 0.25rem;">
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 0.95rem;">Credit / Debit Card</strong>
@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block" style="padding: 1.1rem; font-size: 1rem;">
+      <button type="submit" id="placeOrderBtn" class="btn btn-primary btn-block" style="padding: 1.15rem; font-size: 1.05rem; font-weight: 700; cursor: pointer; border-radius: var(--radius-sm); box-shadow: 0 2px 4px rgba(0,0,0,0.06);">
         Authorize & Place Circular Order &rarr;
       </button>
     </form>
@@ -121,7 +121,7 @@
               </div>
               <div style="text-align: right;">
                 <div>Rp <%= formatIdr(item.subtotal) %></div>
-                <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= formatIdr(item.subtotal) %> RT</div>
+                <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= formatIdr(item.tokenSubtotal || item.subtotal) %> RT</div>
               </div>
             </div>
           <% }) %>

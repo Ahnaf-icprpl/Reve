@@ -55,10 +55,10 @@
           Available Balance
         </span>
         <div style="font-size: 2rem; font-weight: 800; color: var(--token-green-dark); margin: 0.25rem 0;">
-          <%= wallet.balance %> RT
+          <%= formatIdr(wallet.balance) %> RT
         </div>
         <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-          Guaranteed 1:1 (<%= wallet.balance %> RP) marketplace purchasing value.
+          Guaranteed 1:1 (Rp <%= formatIdr(wallet.balance) %>) marketplace purchasing value.
         </p>
         <a href="/marketplace" style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-decoration: underline;">
           Spend on Clothing &rarr;
@@ -138,7 +138,7 @@
                 </div>
                 <div style="text-align: right;">
                   <span class="badge <%= order.status === 'Delivered' ? 'badge-status-credited' : 'badge-status-ready' %>"><%= order.status %></span>
-                  <div style="font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">$<%= order.totalFiat.toFixed(2) %></div>
+                  <div style="font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">Rp <%= formatIdr(order.totalFiat) %></div>
                 </div>
               </div>
             <% }) %>
@@ -167,7 +167,7 @@
                 </div>
                 <div style="text-align: right;">
                   <span class="badge <%= t.status === 'Offer Ready' ? 'badge-status-ready' : 'badge-status-credited' %>"><%= t.status %></span>
-                  <div style="font-weight: 700; color: var(--token-green-dark); font-size: 0.9rem; margin-top: 0.25rem;"><%= t.assessedValueTokens %> RT</div>
+                  <div style="font-weight: 700; color: var(--token-green-dark); font-size: 0.9rem; margin-top: 0.25rem;"><%= formatIdr(t.assessedValueTokens) %> RT</div>
                 </div>
               </div>
             <% }) %>

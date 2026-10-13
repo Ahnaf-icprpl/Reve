@@ -56,8 +56,8 @@
                     <div style="color: var(--text-muted); font-size: 0.78rem;"><%= item.brand %> &bull; Qty: <%= item.quantity %></div>
                   </div>
                   <div style="text-align: right; font-size: 0.85rem;">
-                    <div>$<%= item.price %></div>
-                    <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= item.tokens %> RT</div>
+                    <div>Rp <%= formatIdr(item.price) %></div>
+                    <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= formatIdr(item.tokens) %> RT</div>
                   </div>
                 </div>
               <% }) %>
@@ -69,7 +69,7 @@
                 <span style="color: var(--text-muted);">Payment Method:</span>
                 <strong><%= order.paymentMethod %></strong>
                 <% if (order.paidWithTokens > 0) { %>
-                  <span class="badge badge-token" style="margin-left: 0.5rem;"><%= order.paidWithTokens %> RT Redeemed</span>
+                  <span class="badge badge-token" style="margin-left: 0.5rem;"><%= formatIdr(order.paidWithTokens) %> RT Redeemed</span>
                 <% } %>
               </div>
 
@@ -78,7 +78,7 @@
                   💧 <%= (order.ecoMetrics?.waterSaved || 0).toLocaleString() %>L Water Conserved
                 </span>
                 <span style="font-size: 1.1rem; font-weight: 700;">
-                  Total: $<%= order.totalFiat.toFixed(2) %>
+                  Total: Rp <%= formatIdr(order.totalFiat) %>
                 </span>
               </div>
             </div>

@@ -38,6 +38,15 @@ app.use(async (req, res, next) => {
     res.locals.toast = req.session.toast || null;
     delete req.session.toast;
     res.locals.currentPath = req.path;
+    res.locals.formatIdr = function (val) {
+      if (val === null || val === undefined) return "0";
+      let num = Number(val);
+      if (isNaN(num)) return "0";
+      if (num > 0 && num < 1000) {
+        num = num * 1000;
+      }
+      return num.toLocaleString("id-ID");
+    };
 
     if (req.session.user && req.session.user.id) {
       res.locals.currentUser = await db.getUserById(req.session.user.id);

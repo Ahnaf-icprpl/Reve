@@ -6,6 +6,6 @@
 INSERT INTO platform_metrics (key, value) VALUES
 ('garmentsRecirculated', '14,820'),
 ('waterSavedLiters', '18.4M'),
-('tokensEarnedByCommunity', '840,000'),
+('tokensEarnedByCommunity', '840M'),
 ('landfillDivertedKg', '12,400')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;

@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS products (
     condition_score VARCHAR(16) NOT NULL, -- e.g. '9.5/10'
     condition_notes TEXT,
     material TEXT NOT NULL,
-    price_fiat NUMERIC(10, 2) NOT NULL, -- USD price
-    tokens NUMERIC(10, 2) NOT NULL, -- 1:1 token peg (RT)
+    price_fiat NUMERIC(10, 2) NOT NULL, -- IDR price (Rp)
+    tokens NUMERIC(10, 2) NOT NULL, -- Tokens price (RT)
     original_retail NUMERIC(10, 2),
     water_liters_saved INTEGER DEFAULT 0,
     co2_kg_saved NUMERIC(6, 2) DEFAULT 0,

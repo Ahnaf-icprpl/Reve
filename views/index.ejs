@@ -48,19 +48,19 @@
         <div class="dual-token-card">
           <div class="dual-token-header">
             <span class="dual-token-title">How Revé Tokens Work</span>
-            <span class="badge badge-token">1:1 Value Peg</span>
+            <span class="badge badge-token">1 RT = 1 Rp</span>
           </div>
           <div class="dual-token-comparison">
             <div class="comparison-box highlight">
               <span class="comparison-tag">Spend Inside Revé</span>
-              <span class="comparison-val">1 RT = 1 RP</span>
+              <span class="comparison-val">1 RT = 1 Rp</span>
               <p class="comparison-desc">
                 Full 100% value retention when redeemed for curated circular clothing.
               </p>
             </div>
             <div class="comparison-box">
               <span class="comparison-tag">Convert to Cash</span>
-              <span class="comparison-val">1 RT = 0.80 RP</span>
+              <span class="comparison-val">1 RT = 0.80 Rp</span>
               <p class="comparison-desc">
                 Cashing out incurs a 20% conversion deduction to keep value in the circular loop.
               </p>
@@ -72,7 +72,7 @@
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            <span>Your current wallet: <strong><%= wallet.balance %> RT</strong> (<%= wallet.balance %> RP in clothing)</span>
+            <span>Your current wallet: <strong><%= formatIdr(wallet.balance) %> RT</strong> (Rp <%= formatIdr(wallet.balance) %> in clothing)</span>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@
           <span class="pillar-num">01</span>
           <h3 class="pillar-title">Buy Circular Clothing</h3>
           <p class="pillar-body">
-            Browse verified garments across outerwear, denim, knitwear, and vintage pieces. Pay seamlessly with your earned tokens at a 1:1 peg (1 RT = 1 RP) or standard checkout.
+            Browse verified garments across outerwear, denim, knitwear, and vintage pieces. Pay seamlessly with your earned tokens (1 RT = 1 Rp) or standard checkout.
           </p>
           <a href="/marketplace" class="pillar-link">Shop Marketplace &rarr;</a>
         </div>
@@ -143,7 +143,6 @@
               </a>
               <div class="product-badges">
                 <span class="badge badge-condition"><%= product.condition %></span>
-                <span class="badge badge-token"><%= product.tokens %> RT Peg</span>
               </div>
             </div>
 
@@ -159,11 +158,10 @@
 
               <div class="product-price-row">
                 <div>
-                  <span class="fiat-price">$<%= product.price %></span>
-                  <span class="token-peg-tag">USD</span>
+                  <span class="fiat-price">Rp <%= formatIdr(product.price) %></span>
                 </div>
                 <div class="token-price">
-                  <span><%= product.tokens %> RT</span>
+                  <span><%= formatIdr(product.tokens) %> RT</span>
                 </div>
               </div>
 

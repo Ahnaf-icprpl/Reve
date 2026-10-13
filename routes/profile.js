@@ -32,8 +32,8 @@ router.get("/profile", async (req, res, next) => {
     tradeIns.forEach(t => {
       if (t.status === "Credited" || t.status === "Offer Ready") {
         personalGarmentsRecirculated += 1;
-        personalWaterSaved += (t.assessedValueTokens || 0) * 25;
-        personalCo2Saved += Number(((t.assessedValueTokens || 0) * 0.08).toFixed(1));
+        personalWaterSaved += Math.round(((t.assessedValueTokens || 0) / 1000) * 15);
+        personalCo2Saved += Number((((t.assessedValueTokens || 0) / 1000) * 0.04).toFixed(1));
       }
     });
 

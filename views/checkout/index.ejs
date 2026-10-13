@@ -49,7 +49,7 @@
           <span>2. Select Payment Method</span>
         </h2>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-          Revé tokens maintain an exact 1:1 value peg (1 RT = 1 RP) when spent on circular fashion.
+          Revé tokens can be spent directly on circular fashion (1 RT = 1 Rp).
         </p>
 
         <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -59,10 +59,10 @@
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 0.95rem;">Pay Full with Revé Tokens (RT)</strong>
-                <span class="badge badge-token">1:1 Value (1 RT = 1 RP)</span>
+                <span class="badge badge-token">1:1 Value (1 RT = 1 Rp)</span>
               </div>
               <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                Redeem <strong><%= cart.tokenSubtotal %> RT</strong> from your wallet. Current available balance: <strong><%= wallet.balance %> RT</strong>.
+                Redeem <strong><%= formatIdr(cart.tokenSubtotal) %> RT</strong> from your wallet. Current available balance: <strong><%= formatIdr(wallet.balance) %> RT</strong>.
               </p>
               <% if (wallet.balance < cart.tokenSubtotal) { %>
                 <span style="font-size: 0.75rem; color: #b91c1c; font-weight: 600;">
@@ -77,11 +77,11 @@
             <input type="radio" name="paymentMethod" value="split" <%= wallet.balance < cart.tokenSubtotal && wallet.balance > 0 ? 'checked' : '' %> style="margin-top: 0.25rem;">
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 0.95rem;">Split: Redeem All <%= wallet.balance %> RT + Card Remainder</strong>
+                <strong style="font-size: 0.95rem;">Split: Redeem All <%= formatIdr(wallet.balance) %> RT + Card Remainder</strong>
                 <span class="badge badge-condition">Hybrid Payment</span>
               </div>
               <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                Redeem <%= Math.min(wallet.balance, cart.tokenSubtotal) %> RT as a $<%= Math.min(wallet.balance, cart.tokenSubtotal) %>.00 credit, pay $<%= Math.max(0, cart.subtotal - wallet.balance).toFixed(2) %> on card.
+                Redeem <%= formatIdr(Math.min(wallet.balance, cart.tokenSubtotal)) %> RT as a Rp <%= formatIdr(Math.min(wallet.balance, cart.tokenSubtotal)) %> credit, pay Rp <%= formatIdr(Math.max(0, cart.subtotal - wallet.balance)) %> on card.
               </p>
             </div>
           </label>
@@ -95,7 +95,7 @@
                 <span style="font-size: 0.78rem; color: var(--text-muted);">Visa, MC, Amex</span>
               </div>
               <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
-                Pay $<%= cart.subtotal.toFixed(2) %> USD in full using credit/debit card. Keep your token balance intact.
+                Pay Rp <%= formatIdr(cart.subtotal) %> in full using credit/debit card. Keep your token balance intact.
               </p>
             </div>
           </label>
@@ -120,8 +120,8 @@
                 <div style="color: var(--text-muted); font-size: 0.78rem;">Size <%= item.product.size %> &bull; Qty <%= item.quantity %></div>
               </div>
               <div style="text-align: right;">
-                <div>$<%= item.subtotal %></div>
-                <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= item.subtotal %> RT</div>
+                <div>Rp <%= formatIdr(item.subtotal) %></div>
+                <div style="color: var(--token-green-dark); font-size: 0.75rem;"><%= formatIdr(item.subtotal) %> RT</div>
               </div>
             </div>
           <% }) %>
@@ -129,11 +129,11 @@
 
         <div class="calc-row">
           <span class="calc-label">Subtotal</span>
-          <span class="calc-val">$<%= cart.subtotal.toFixed(2) %></span>
+          <span class="calc-val">Rp <%= formatIdr(cart.subtotal) %></span>
         </div>
         <div class="calc-row">
-          <span class="calc-label">Token Peg (1:1)</span>
-          <span class="calc-val" style="color: var(--token-green-dark);"><%= cart.tokenSubtotal %> RT</span>
+          <span class="calc-label">Tokens Equivalent</span>
+          <span class="calc-val" style="color: var(--token-green-dark);"><%= formatIdr(cart.tokenSubtotal) %> RT</span>
         </div>
         <div class="calc-row">
           <span class="calc-label">Circular Delivery</span>
@@ -143,8 +143,8 @@
         <div class="calc-row total-row" style="margin-top: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
           <span>Total Due</span>
           <div style="text-align: right;">
-            <div style="font-size: 1.35rem; font-weight: 700;">$<%= cart.subtotal.toFixed(2) %></div>
-            <div style="font-size: 0.8rem; color: var(--token-green-dark); font-weight: 600;">or <%= cart.tokenSubtotal %> RT</div>
+            <div style="font-size: 1.35rem; font-weight: 700;">Rp <%= formatIdr(cart.subtotal) %></div>
+            <div style="font-size: 0.8rem; color: var(--token-green-dark); font-weight: 600;">or <%= formatIdr(cart.tokenSubtotal) %> RT</div>
           </div>
         </div>
 

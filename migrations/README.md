@@ -7,7 +7,7 @@ This folder contains modular SQL migration files structured by functional domain
 | File | Domain | Description |
 |---|---|---|
 | `001_users.sql` | **Users & Authentication** | Production-grade users schema (`email`, `password_hash`, `salt`, `full_name`, `role`, timestamps) |
-| `002_products.sql` | **Catalog & Inventory** | Circular clothing marketplace listings, conditions, sizing, prices (USD & RT), and eco-savings |
+| `002_products.sql` | **Catalog & Inventory** | Circular clothing marketplace listings, conditions, sizing, prices (IDR & RT), and eco-savings |
 | `003_trade_ins.sql` | **Trade-in Intake** | Wardrobe trade-in submissions, valuation assessments, and offer lifecycle |
 | `004_donations.sql` | **Donations & Reclamation** | Textile donations, damage assessments (Circle less), tracking passes, and landfill diversion |
 | `005_tokens_and_ledger.sql` | **Token Economy (RT)** | Wallets, token balances, transaction audit ledger, and conversion deductions |

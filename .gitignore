@@ -34,9 +34,10 @@ pids/
 .parcel-cache/
 .tmp/
 
-# Temporary files
+# Temporary files and uploads
 tmp/
 temp/
+public/uploads/*
 
 # Database local storage, exports, and dump files
 *.sqlite

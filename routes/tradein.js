@@ -85,7 +85,7 @@ router.post("/trade-in", upload.single("photo"), async (req, res, next) => {
 
     req.session.toast = {
       type: "success",
-      message: `Trade-in submitted! We've generated an instant offer of ${assessedTokens} RT for your item.`
+      message: `Trade-in submitted! We've generated an instant offer of ${assessedTokens.toLocaleString("id-ID")} RT for your item.`
     };
 
     res.redirect(`/trade-in/track`);
@@ -149,9 +149,8 @@ router.post("/trade-in/:id/accept", async (req, res, next) => {
 
     req.session.toast = {
       type: "success",
-      message: `Success! ${tokens} RT has been credited to your account. Spend it 1:1 on clothing in the marketplace.`
+      message: `Success! ${tokens.toLocaleString("id-ID")} RT has been credited to your account. Spend it on clothing in the marketplace.`
     };
-
     res.redirect("/trade-in/track");
   } catch (err) {
     req.session.toast = { type: "error", message: err.message };
